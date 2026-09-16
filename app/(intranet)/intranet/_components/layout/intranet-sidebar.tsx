@@ -17,7 +17,7 @@ interface IntranetSidebarProps {
 }
 
 export function IntranetSidebar({
-  supportHref = "/intranet/suporte",
+  supportHref = "/helpdesk/chamados/novo",
 }: IntranetSidebarProps) {
   return (
     <div>

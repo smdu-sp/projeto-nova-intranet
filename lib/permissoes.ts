@@ -19,6 +19,8 @@ export type CapacidadesHelpdesk = {
   relatorios: boolean;
   /** Cadastro de permissões por sistema e pontos focais */
   gerenciarAcessoSistemas: boolean;
+  /** Cadastro de categorias de chamado e o setor para o qual cada uma é enviada */
+  gerenciarCategorias: boolean;
 };
 
 export function getCapacidadesHelpdesk(permissao: string): CapacidadesHelpdesk {
@@ -29,6 +31,7 @@ export function getCapacidadesHelpdesk(permissao: string): CapacidadesHelpdesk {
     unidades: podeGerenciarUnidadesHelpdesk(permissao),
     relatorios: podeVerRelatoriosHelpdesk(permissao),
     gerenciarAcessoSistemas: podeGerenciarAcessoSistemasHelpdesk(permissao),
+    gerenciarCategorias: podeGerenciarCategoriasHelpdesk(permissao),
   };
 }
 
@@ -54,6 +57,11 @@ export function podeAcessarPatrimonioHelpdesk(permissao: string): boolean {
 
 /** Cadastro de unidades de atendimento do help desk. */
 export function podeGerenciarUnidadesHelpdesk(permissao: string): boolean {
+  return ["DEV", "ADM", "SUP"].includes(permissao);
+}
+
+/** Cadastro de categorias de chamado e do setor para o qual cada uma é roteada. */
+export function podeGerenciarCategoriasHelpdesk(permissao: string): boolean {
   return ["DEV", "ADM", "SUP"].includes(permissao);
 }
 

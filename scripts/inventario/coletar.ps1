@@ -77,6 +77,33 @@ function Get-TipoEquipamento([int[]] $chassis) {
   }
 }
 
+# Mapeia letra de unidade (C, D...) -> {Tipo, Modelo} do disco físico por trás dela.
+# Usa Get-PhysicalDisk + Get-Partition (módulo Storage); em alguns hosts remotos via
+# WinRM esse provider falha (exige DCOM) — nesse caso volta {} e os campos ficam nulos.
+function Get-MapaTipoMidia($cimArgs) {
+  $mapa = @{}
+  try {
+    $fisicos = Get-PhysicalDisk @cimArgs -ErrorAction Stop
+    $particoes = Get-Partition @cimArgs -ErrorAction Stop
+    foreach ($part in $particoes) {
+      if (-not $part.DriveLetter) { continue }
+      $disco = $fisicos | Where-Object { $_.DeviceId -eq [string]$part.DiskNumber } | Select-Object -First 1
+      if ($disco) {
+        $tipo = switch ("$($disco.MediaType)") {
+          'SSD' { 'SSD' }
+          'HDD' { 'HDD' }
+          default { 'Desconhecido' }
+        }
+        $mapa["$($part.DriveLetter):"] = @{ Tipo = $tipo; Modelo = $disco.FriendlyName }
+      }
+    }
+  }
+  catch {
+    # Sem suporte remoto (comum via WinRM) — segue sem tipo/modelo de mídia.
+  }
+  return $mapa
+}
+
 # Coleta softwares instalados via registro (evita Win32_Product, que é lento/perigoso)
 function Get-SoftwaresInstalados($cim) {
   $paths = @(
@@ -127,6 +154,7 @@ function Get-Payload([string] $maquina, [bool] $isLocal) {
     $video = Get-CimInstance Win32_VideoController @cimArgs | Select-Object -First 1
     $board = Get-CimInstance Win32_BaseBoard @cimArgs | Select-Object -First 1
     $disks = Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' @cimArgs
+    $mapaMidia = Get-MapaTipoMidia $cimArgs
     $net  = Get-CimInstance Win32_NetworkAdapterConfiguration -Filter 'IPEnabled=True' @cimArgs |
               Select-Object -First 1
 
@@ -156,9 +184,12 @@ function Get-Payload([string] $maquina, [bool] $isLocal) {
         placaVideo = $video.Name
       }
       discos        = @($disks | ForEach-Object {
+          $midia = $mapaMidia[$_.DeviceID]
           @{ modelo = $_.DeviceID
             tamanhoMb = [math]::Round($_.Size / 1MB)
-            livreMb   = [math]::Round($_.FreeSpace / 1MB) }
+            livreMb   = [math]::Round($_.FreeSpace / 1MB)
+            tipoMidia = $midia.Tipo
+            modeloFisico = $midia.Modelo }
         })
     }
 
@@ -190,13 +221,67 @@ function Send-Coleta([string] $maquina, [bool] $isLocal) {
   }
 }
 
-# Expande um CIDR /24 em 254 IPs (v1 suporta apenas /24).
-function Expand-Cidr24([string] $cidr) {
-  if ($cidr -match '^(\d+)\.(\d+)\.(\d+)\.\d+/24$') {
-    $p = "$($matches[1]).$($matches[2]).$($matches[3])"
-    return (1..254 | ForEach-Object { "$p.$_" })
+# Expande um CIDR (ex.: 10.75.32.0/21) na lista de IPs de host, excluindo
+# endereço de rede e broadcast. Prefixo entre /16 (65534 hosts) e /30, pra
+# evitar um scan gigantesco por engano.
+function Expand-Cidr([string] $cidr) {
+  if ($cidr -notmatch '^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})$') {
+    throw "CIDR inválido: '$cidr' (use o formato 10.75.32.0/21)"
   }
-  throw "Só sub-redes /24 são suportadas no momento (ex.: 10.75.32.0/24)"
+  $octetos = 1..4 | ForEach-Object { [int]$matches[$_] }
+  if ($octetos | Where-Object { $_ -gt 255 }) { throw "CIDR inválido: '$cidr'" }
+  $prefixo = [int]$matches[5]
+  if ($prefixo -lt 16 -or $prefixo -gt 30) {
+    throw "Prefixo /$prefixo nao suportado, use entre /16 e /30 (ex.: 10.75.32.0/21)"
+  }
+
+  [uint32] $ip = 0
+  foreach ($o in $octetos) { $ip = ($ip -shl 8) -bor [uint32] $o }
+  [uint32] $mascara = [uint32]::MaxValue -shl (32 - $prefixo)
+  [uint32] $rede = $ip -band $mascara
+  [uint32] $broadcast = $rede -bor (-bnot $mascara)
+
+  for ($atual = $rede + 1; $atual -lt $broadcast; $atual++) {
+    $b = [BitConverter]::GetBytes([uint32] $atual)
+    [Array]::Reverse($b)
+    $b -join '.'
+  }
+}
+
+# Ping assíncrono em paralelo — para sub-redes grandes (ex.: /21 = ~2000 IPs),
+# testar sequencialmente levaria dezenas de minutos.
+function Test-HostsAlive([string[]] $ips, [int] $timeoutMs = 500) {
+  $sondas = $ips | ForEach-Object {
+    $ping = [System.Net.NetworkInformation.Ping]::new()
+    [PSCustomObject]@{ Ip = $_; Ping = $ping; Task = $ping.SendPingAsync($_, $timeoutMs) }
+  }
+  [System.Threading.Tasks.Task]::WaitAll(@($sondas.Task))
+  foreach ($s in $sondas) {
+    if ($s.Task.Result.Status -eq 'Success') { $s.Ip }
+    $s.Ping.Dispose()
+  }
+}
+
+# Resolve hostname (DNS reverso) para IPs vivos, em paralelo. WinRM por IP puro
+# exige TrustedHosts (NTLM); indo por hostname, Kerberos autentica sozinho em
+# domínio. Sem PTR no DNS, cai de volta pro IP.
+function Resolve-Hostnames([string[]] $ips, [int] $timeoutMs = 8000) {
+  $tarefas = $ips | ForEach-Object {
+    [PSCustomObject]@{ Ip = $_; Task = [System.Net.Dns]::GetHostEntryAsync($_) }
+  }
+  # WaitAll lança AggregateException se qualquer tarefa falhar (comum: IP sem
+  # PTR no DNS) — ignora, o status de cada tarefa é checado individualmente abaixo.
+  try { [System.Threading.Tasks.Task]::WaitAll(@($tarefas.Task), $timeoutMs) | Out-Null } catch {}
+  $mapa = @{}
+  foreach ($t in $tarefas) {
+    $mapa[$t.Ip] = if ($t.Task.IsCompleted -and $t.Task.Status -eq 'RanToCompletion' -and $t.Task.Result.HostName) {
+      $t.Task.Result.HostName
+    }
+    else {
+      $t.Ip
+    }
+  }
+  return $mapa
 }
 
 # Consome a fila de solicitações de coleta (modo -FromQueue).
@@ -213,15 +298,23 @@ function Invoke-Fila {
       Invoke-RestMethod -Uri $patch -Method Patch -Headers $hdr `
         -ContentType 'application/json' -Body (@{ status = 'processando' } | ConvertTo-Json) | Out-Null
 
-      $alvos = if ($s.tipoAlvo -eq 'subrede') { Expand-Cidr24 $s.alvo } else { @($s.alvo) }
-      $enviados = 0; $vivos = 0
+      if ($s.tipoAlvo -eq 'subrede') {
+        $candidatos = @(Expand-Cidr $s.alvo)
+        Write-Host "  #$($s.id) [$($s.alvo)] varrendo $($candidatos.Count) IP(s)..." -ForegroundColor DarkGray
+        $ipsVivos = @(Test-HostsAlive $candidatos)
+        Write-Host "  #$($s.id) [$($s.alvo)] $($ipsVivos.Count) IP(s) vivos, resolvendo hostname..." -ForegroundColor DarkGray
+        $mapaHost = Resolve-Hostnames $ipsVivos
+        $alvos = @($ipsVivos | ForEach-Object { $mapaHost[$_] })
+      }
+      else {
+        $alvos = @($s.alvo)
+      }
+
+      $enviados = 0; $vivos = $alvos.Count
       foreach ($m in $alvos) {
-        if ($s.tipoAlvo -eq 'subrede' -and
-          -not (Test-Connection -ComputerName $m -Count 1 -Quiet -ErrorAction SilentlyContinue)) { continue }
         # Alvo que é a própria máquina do coletor -> coleta local (sem WinRM).
         $isLocal = ($s.tipoAlvo -eq 'host') -and
           ($m -in @('localhost', '127.0.0.1', $env:COMPUTERNAME, "$env:COMPUTERNAME.$env:USERDNSDOMAIN"))
-        $vivos++
         if (Send-Coleta $m $isLocal) { $enviados++ }
       }
 

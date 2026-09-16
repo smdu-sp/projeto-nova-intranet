@@ -75,6 +75,19 @@ model Usuario {
   gpImportadorCargas    GpCargaMensal[]                   @relation("gpImportadorCargas")
   gpUnidades            GpUsuarioUnidade[]                @relation("gpUsuarioUnidades")
 
+  assinaturaPerfil       AssinaturaPerfil?
+  invEquipamentos        InvEquipamento[]      @relation("invServidorEquipamentos")
+  invColetaSolicitacoes  InvColetaSolicitacao[] @relation("invSolicitanteColeta")
+  ttServidor             TtServidor?            @relation("ttServidorUsuario")
+  ttUsuarioUnidades      TtUsuarioUnidade[]     @relation("ttUsuarioUnidades")
+  ttRegistrosValidados   TtRegistroDiario[]     @relation("ttRegistroValidador")
+  ttRegistrosDevolvidos  TtRegistroDiario[]     @relation("ttRegistroDevolvedor")
+  ttRegistrosExcluidos   TtRegistroDiario[]     @relation("ttRegistroExcluidor")
+  ttFechamentosAutor     TtFechamentoMensal[]   @relation("ttFechamentoAutor")
+  ttFechamentosReabertura TtFechamentoMensal[]  @relation("ttFechamentoReabertura")
+  ttRelatoriosEmitidos   TtRelatorioEmitido[]   @relation("ttRelatorioAutor")
+  ttAuditLogsAtor        TtAuditLog[]           @relation("ttAuditAtor")
+
   @@map("principal.usuarios")
 }
 
@@ -82,6 +95,8 @@ enum Modulo {
   reserva_salas
   avaliacao_limpeza
   gestao_pessoas
+  assinatura_email
+  teletrabalho
 }
 
 model Permissao {

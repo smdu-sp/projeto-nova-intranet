@@ -37,7 +37,11 @@
       "Bash(head -50 \"c:\\\\Users\\\\d854440\\\\Downloads\\\\inventario.sql\")",
       "PowerShell(Get-ChildItem \"c:\\\\Users\\\\d854440\\\\\" -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -match \"sisgp\" } | Select-Object FullName, Name, LastWriteTime | Select-Object -First 20)",
       "Bash(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\d854440\\\\Sistemas\\\\salas-reuniao-fullstack\\\\app\\\\api\\\\helpdesk\\\\transferencias\")",
-      "Bash(Out-Null)"
+      "Bash(Out-Null)",
+      "Bash(node -e \"require\\('dotenv/config'\\); console.log\\(process.env.DATABASE_URL\\)\")",
+      "Bash(mysql --version)",
+      "Bash(node -e \"require\\('dotenv/config'\\); console.log\\('HOST=',process.env.DATABASE_HOST\\); console.log\\('USER=',process.env.DATABASE_USER\\); console.log\\('NAME=',process.env.DATABASE_NAME\\); console.log\\('URL=',process.env.DATABASE_URL\\);\")",
+      "Bash(npx tsc *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\d854440\\Sistemas\\salas-reuniao-fullstack\\app\\api\\helpdesk"

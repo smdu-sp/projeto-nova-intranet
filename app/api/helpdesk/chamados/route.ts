@@ -214,6 +214,7 @@ export async function GET() {
       nome: c.nome,
       pai: c.pai,
       filho: c.filho,
+      area: c.area,
       full: c.filho ? `${c.pai} > ${c.filho}` : c.pai,
     }));
 
@@ -383,21 +384,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Solicitante inválido" }, { status: 400 });
     }
 
-    if (!isStaff && solicitanteUuid !== usuario.id) {
-      return NextResponse.json(
-        { error: "Você só pode abrir chamados em seu nome" },
-        { status: 403 }
-      );
-    }
-
     let abertoEmNomeDeId: string | null = null;
-    if (abertoEmNomeDeNumId) {
-      if (!isStaff) {
+    if (!isStaff) {
+      if (solicitanteUuid !== usuario.id) {
+        // Colega abrindo o chamado por alguém que não consegue abrir sozinho
+        // (ex.: sem internet). Fica registrado quem realmente preencheu, para rastreabilidade.
+        abertoEmNomeDeId = usuario.id;
+      } else if (abertoEmNomeDeNumId) {
         return NextResponse.json(
           { error: "Sem permissão para abrir em nome de outro usuário" },
           { status: 403 }
         );
       }
+    } else if (abertoEmNomeDeNumId) {
       abertoEmNomeDeId = numToUuid.get(abertoEmNomeDeNumId) ?? null;
       if (!abertoEmNomeDeId) {
         return NextResponse.json(
@@ -467,7 +466,7 @@ export async function POST(request: NextRequest) {
       .map((n) => numToUuid.get(n))
       .filter((id): id is string => !!id && id !== solicitanteUuid);
 
-    if (!isStaff && observadorUuids.length > 0 && !observadorUuids.includes(usuario.id)) {
+    if (solicitanteUuid !== usuario.id && !observadorUuids.includes(usuario.id)) {
       observadorUuids.push(usuario.id);
     }
 

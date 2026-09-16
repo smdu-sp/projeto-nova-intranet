@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { AutocompleteInput, resolveCategoriaId } from './hd-app';
 import { categoriaCompativelComArea } from '@/lib/helpdesk/tipos-chamado';
@@ -13,6 +13,8 @@ import type { Categoria, Chamado, ItemPatrimonio, Prioridade, TipoChamado, Unida
 type PrioridadeLabel = 'Normal' | 'Alta' | 'Máxima';
 
 interface Answers {
+  paraOutraPessoa: boolean;
+  colega: Usuario | null;
   area: TipoChamado | null;
   subcategoria: string;
   categoriaPai: string;
@@ -24,6 +26,7 @@ interface Answers {
   descricao: string;
   urgent: boolean;
   prioridadeLabel: PrioridadeLabel;
+  itemManual: ItemPatrimonio | null;
 }
 
 type IconeOpcao = 'monitor' | 'phone' | 'key' | 'wifi' | 'wrench' | 'help';
@@ -45,7 +48,7 @@ interface CampoForm {
   options?: string[];
 }
 
-type TipoStep = 'choice' | 'sugestao' | 'form' | 'summary' | 'success' | 'acesso-redirect';
+type TipoStep = 'choice' | 'sugestao' | 'form' | 'summary' | 'success' | 'acesso-redirect' | 'para-quem';
 type Fase = 'ident' | 'diag' | 'confirm';
 
 interface StepDef {
@@ -61,6 +64,8 @@ interface StepDef {
 
 function answersIniciais(area?: TipoChamado): Answers {
   return {
+    paraOutraPessoa: false,
+    colega: null,
     area: area ?? null,
     subcategoria: '',
     categoriaPai: '',
@@ -72,8 +77,11 @@ function answersIniciais(area?: TipoChamado): Answers {
     descricao: '',
     urgent: false,
     prioridadeLabel: 'Normal',
+    itemManual: null,
   };
 }
+
+const STEP_PARA_QUEM = 'para_quem';
 
 const AREA_ENTRY_STEP: Record<TipoChamado, string> = {
   suporte_tecnico: 'diag_suporte_equip',
@@ -86,6 +94,10 @@ const AREA_ENTRY_STEP: Record<TipoChamado, string> = {
 // ─── Árvore de diagnóstico ──────────────────────────────────────────────────
 
 const STEPS: Record<string, StepDef> = {
+  [STEP_PARA_QUEM]: {
+    type: 'para-quem', phase: 'ident', title: 'Para quem é esse chamado?',
+    subtitle: 'Se a pessoa não consegue abrir o chamado sozinha (ex.: está sem internet), abra por ela.',
+  },
   inicio: {
     type: 'choice', phase: 'ident', title: 'O que está acontecendo?',
     subtitle: 'Escolha a opção mais parecida com o seu problema.',
@@ -346,7 +358,7 @@ const PRIORIDADE_MAP: Record<PrioridadeLabel, Prioridade> = {
 };
 
 const FALLBACK_CATEGORIA_PAI: Partial<Record<TipoChamado, string>> = {
-  reparos_infraestrutura: 'Mudança de equipamento de local',
+  reparos_infraestrutura: 'Infraestrutura Predial',
 };
 
 function resolverCategoriaId(
@@ -365,7 +377,7 @@ function resolverCategoriaId(
     const viaPreferida = resolveCategoriaId(categorias, preferida, '');
     if (viaPreferida) return viaPreferida;
   }
-  const compativeis = categoriasPai.filter((p) => categoriaCompativelComArea(p, tipoArea));
+  const compativeis = categoriasPai.filter((p) => categoriaCompativelComArea(categorias, p, tipoArea));
   const pool = compativeis.length > 0 ? compativeis : categoriasPai;
   for (const p of pool) {
     const id = resolveCategoriaId(categorias, p, '') ?? categorias.find((c) => c.pai === p)?.id;
@@ -414,10 +426,12 @@ function isTipoComputadorLocal(tipo: string | null | undefined): boolean {
 }
 
 export function ViewNovoChamadoAssistente({
-  navTo, setChamados, usuarioPorId, usuarioLogadoId, unidades, categorias, categoriasPai, itensPatrimonio, areaFiltro,
+  navTo, setChamados, usuarios, usuarioPorId, usuarioLogadoId, unidades, categorias, categoriasPai, itensPatrimonio, areaFiltro,
 }: WizardProps) {
   const router = useRouter();
-  const entryStepId = areaFiltro ? AREA_ENTRY_STEP[areaFiltro] : 'inicio';
+  /** Depois de dizer para quem é o chamado, segue para o diagnóstico (ou direto pra área, se veio filtrado). */
+  const proximaAposIdentificacao = areaFiltro ? AREA_ENTRY_STEP[areaFiltro] : 'inicio';
+  const entryStepId = STEP_PARA_QUEM;
 
   const [stepId, setStepId] = useState(entryStepId);
   const [history, setHistory] = useState<{ stepId: string; answers: Answers }[]>([]);
@@ -427,17 +441,46 @@ export function ViewNovoChamadoAssistente({
   const [chamadoCriado, setChamadoCriado] = useState<Chamado | null>(null);
 
   const usuarioLogado = usuarioLogadoId ? usuarioPorId(usuarioLogadoId) : null;
+  const solicitanteEfetivo = answers.paraOutraPessoa ? answers.colega : usuarioLogado;
 
   const step = getStep(stepId, answers);
   const tipoArea = answers.area ?? undefined;
-  const areaMeta = tipoArea ? TIPO_CHAMADO_META[tipoArea] : null;
+  const areaDiagnostico = tipoArea ?? 'suporte_tecnico';
+
+  const categoriaResolvidaId = useMemo(
+    () => resolverCategoriaId(categorias, categoriasPai, areaDiagnostico, answers.categoriaPai, answers.categoriaFilho),
+    [categorias, categoriasPai, areaDiagnostico, answers.categoriaPai, answers.categoriaFilho],
+  );
+  const categoriaResolvida = useMemo(
+    () => categorias.find((c) => c.id === categoriaResolvidaId) ?? null,
+    [categorias, categoriaResolvidaId],
+  );
+  /** Setor final de atendimento: o setor configurado na categoria (tela de configuração) manda;
+   * o percurso do diagnóstico é só o palpite inicial usado até a categoria ser resolvida. */
+  const areaFinal: TipoChamado = categoriaResolvida?.area ?? areaDiagnostico;
+  const areaMeta = TIPO_CHAMADO_META[areaFinal];
 
   const computadorAuto = useMemo(() => {
-    if (tipoArea !== 'suporte_tecnico' || !usuarioLogadoId) return null;
+    if (areaFinal !== 'suporte_tecnico' || !solicitanteEfetivo) return null;
     return itensPatrimonio.find(
-      (i) => isTipoComputadorLocal(i.tipo) && i.servidorId === usuarioLogadoId && normalizarStatusItem(i.statusitem) === 'Ativo',
+      (i) => isTipoComputadorLocal(i.tipo) && i.servidorId === solicitanteEfetivo.id && normalizarStatusItem(i.statusitem) === 'Ativo',
     ) ?? null;
-  }, [tipoArea, usuarioLogadoId, itensPatrimonio]);
+  }, [areaFinal, solicitanteEfetivo, itensPatrimonio]);
+
+  const computadoresParaEscolha = useMemo(
+    () => itensPatrimonio.filter((i) => isTipoComputadorLocal(i.tipo) && normalizarStatusItem(i.statusitem) === 'Ativo'),
+    [itensPatrimonio],
+  );
+
+  const [detalhesFieldsFixas, setDetalhesFieldsFixas] = useState<CampoForm[]>([]);
+  useEffect(() => {
+    if (stepId === 'detalhes') {
+      setDetalhesFieldsFixas(getDetalhesFields(answers));
+    }
+    // Os campos de "detalhes" são fixados ao entrar no passo: recalculá-los a cada
+    // resposta faria o campo (ex.: Unidade) sumir da tela assim que fosse preenchido.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepId]);
 
   function pushHistoryAndGo(nextId: string, setObj: Partial<Answers>) {
     setHistory((h) => [...h, { stepId, answers }]);
@@ -480,19 +523,23 @@ export function ViewNovoChamadoAssistente({
       setErro('Não foi possível identificar o usuário logado');
       return;
     }
-    const area = answers.area ?? 'suporte_tecnico';
+    if (answers.paraOutraPessoa && !answers.colega) {
+      setErro('Selecione para quem é o chamado');
+      return;
+    }
     if (!answers.unidade) {
       setErro('Selecione a unidade');
       return;
     }
-    const exigeItem = exigeComputadorNaAbertura(area);
-    if (exigeItem && !computadorAuto) {
-      setErro('Não encontramos um computador vinculado ao seu usuário. Abra pelo formulário completo.');
+    const itemEscolhido = computadorAuto ?? answers.itemManual;
+    const exigeItem = exigeComputadorNaAbertura(areaFinal);
+    if (exigeItem && !itemEscolhido) {
+      setErro('Selecione o computador do chamado');
       return;
     }
 
-    const categoriaId = resolverCategoriaId(categorias, categoriasPai, area, answers.categoriaPai, answers.categoriaFilho);
     const prioridade = answers.urgent ? 'urgente' : PRIORIDADE_MAP[answers.prioridadeLabel];
+    const solicitante = solicitanteEfetivo ?? usuarioLogado;
 
     setSalvando(true);
     setErro(null);
@@ -501,16 +548,17 @@ export function ViewNovoChamadoAssistente({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          titulo: gerarTitulo(answers, TIPO_CHAMADO_META[area].label),
+          titulo: gerarTitulo(answers, areaMeta.label),
           descricao: gerarResumo(answers),
           unidadeId: answers.unidade.id,
-          categoriaId,
+          categoriaId: categoriaResolvidaId,
           prioridade,
-          solicitanteId: usuarioLogadoId,
-          telefone: usuarioLogado.telefone || undefined,
-          itemId: computadorAuto?.idbem ?? null,
-          areaAtual: area,
-          observadorIds: [],
+          solicitanteId: solicitante.id,
+          abertoEmNomeDeId: answers.paraOutraPessoa ? usuarioLogadoId : null,
+          telefone: solicitante.telefone || undefined,
+          itemId: itemEscolhido?.idbem ?? null,
+          areaAtual: areaFinal,
+          observadorIds: answers.paraOutraPessoa ? [usuarioLogadoId] : [],
         }),
       });
       const data = await r.json();
@@ -531,9 +579,10 @@ export function ViewNovoChamadoAssistente({
   const isSummary = step.type === 'summary';
   const isSuccess = step.type === 'success';
   const isAcessoRedirect = step.type === 'acesso-redirect';
+  const isParaQuem = step.type === 'para-quem';
 
   const canGoBack = history.length > 0 && !isSuccess;
-  const showUrgentBanner = !isSuccess && !isSummary && !isAcessoRedirect && stepId !== 'urgente_tipo' && stepId !== 'urgente_local';
+  const showUrgentBanner = !isSuccess && !isSummary && !isAcessoRedirect && !isParaQuem && stepId !== 'urgente_tipo' && stepId !== 'urgente_local';
   const showPhases = !isSuccess;
 
   const phaseDefs: Array<{ key: Fase; label: string }> = [
@@ -543,7 +592,7 @@ export function ViewNovoChamadoAssistente({
   ];
   const currentPhaseIdx = Math.max(0, phaseDefs.findIndex((p) => p.key === step.phase));
 
-  const fields = isForm ? (step.fields ?? []) : [];
+  const fields = isForm ? (stepId === 'detalhes' ? detalhesFieldsFixas : (step.fields ?? [])) : [];
   const formDisabled = isForm && fields.some((f) => f.required && isFieldEmpty(f, answers));
 
   const prioridadeFinal: PrioridadeLabel = answers.urgent ? 'Máxima' : answers.prioridadeLabel;
@@ -626,6 +675,56 @@ export function ViewNovoChamadoAssistente({
             <div style={{ background: '#FBDADA', border: '1px solid #F5AAAA', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#7A1F1F' }}>
               {erro}
             </div>
+          )}
+
+          {isParaQuem && (
+            <>
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: '#18181b', margin: 0 }}>{step.title}</h2>
+              {step.subtitle && <p style={{ fontSize: 13.5, color: '#71717a', margin: '6px 0 0' }}>{step.subtitle}</p>}
+              <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
+                {[
+                  { v: false, label: 'Para mim' },
+                  { v: true, label: 'Para outra pessoa' },
+                ].map((opt) => (
+                  <button key={String(opt.v)} type="button"
+                    onClick={() => updateField('paraOutraPessoa', opt.v)}
+                    style={{
+                      flex: 1, padding: '10px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 600,
+                      border: `2px solid ${answers.paraOutraPessoa === opt.v ? '#0A328D' : '#e4e4e7'}`,
+                      background: answers.paraOutraPessoa === opt.v ? '#D9E1F4' : '#fff',
+                      color: answers.paraOutraPessoa === opt.v ? '#0A328D' : '#3f3f46',
+                    }}>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              {answers.paraOutraPessoa && (
+                <div style={{ marginTop: 16 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#3f3f46', marginBottom: 6 }}>Quem precisa de ajuda?</label>
+                  <AutocompleteInput
+                    value={answers.colega}
+                    onChange={(u) => updateField('colega', u)}
+                    items={usuarios.filter((u) => u.id !== usuarioLogadoId && u.statususer === 'Ativo')}
+                    getLabel={(u) => u.nome}
+                    getKey={(u) => u.id}
+                    placeholder="Digite o nome da pessoa..."
+                  />
+                  <div style={{ fontSize: 11.5, color: '#7A8499', marginTop: 6 }}>
+                    Você ficará como observador deste chamado para acompanhar o andamento.
+                  </div>
+                </div>
+              )}
+              <button type="button"
+                onClick={() => pushHistoryAndGo(proximaAposIdentificacao, {})}
+                disabled={answers.paraOutraPessoa && !answers.colega}
+                style={{
+                  marginTop: 22, padding: '11px 22px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600,
+                  cursor: (answers.paraOutraPessoa && !answers.colega) ? 'not-allowed' : 'pointer',
+                  opacity: (answers.paraOutraPessoa && !answers.colega) ? 0.6 : 1,
+                }}>
+                Continuar
+              </button>
+            </>
           )}
 
           {isChoice && step.options && (
@@ -730,6 +829,11 @@ export function ViewNovoChamadoAssistente({
                 <LinhaResumo label="Área responsável">
                   <span style={{ fontSize: 12.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, background: areaMeta.corBg, color: areaMeta.corText }}>{areaMeta.label}</span>
                 </LinhaResumo>
+                {answers.paraOutraPessoa && (
+                  <LinhaResumo label="Solicitante">
+                    <span style={{ fontSize: 13.5, color: '#18181b', fontWeight: 500 }}>{answers.colega?.nome ?? 'Não selecionado'}</span>
+                  </LinhaResumo>
+                )}
                 <LinhaResumo label="Categoria">
                   <span style={{ fontSize: 13.5, color: '#18181b', fontWeight: 500 }}>{answers.subcategoria || 'Não especificado'}</span>
                 </LinhaResumo>
@@ -747,19 +851,33 @@ export function ViewNovoChamadoAssistente({
                 <div style={{ fontSize: 11.5, fontWeight: 600, color: '#71717a', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 6 }}>Resumo</div>
                 <p style={{ fontSize: 13.5, color: '#3f3f46', margin: 0, lineHeight: 1.5 }}>{gerarResumo(answers)}</p>
               </div>
-              {tipoArea === 'suporte_tecnico' && !computadorAuto && (
-                <div style={{ marginTop: 12, background: '#FCE5D0', borderRadius: 8, padding: '10px 14px', fontSize: 12.5, color: '#7A3A0B' }}>
-                  Não encontramos um computador vinculado ao seu usuário. Use o{' '}
-                  <button type="button" onClick={() => navTo('novo-chamado')} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: '#7A3A0B', textDecoration: 'underline', cursor: 'pointer' }}>formulário completo</button>{' '}
-                  para selecionar o equipamento manualmente.
+              {areaFinal === 'suporte_tecnico' && !computadorAuto && (
+                <div style={{ marginTop: 12, background: '#FCE5D0', borderRadius: 8, padding: '12px 14px' }}>
+                  <div style={{ fontSize: 12.5, color: '#7A3A0B', marginBottom: 8 }}>
+                    Não encontramos automaticamente um computador vinculado a {answers.paraOutraPessoa ? (answers.colega?.nome ?? 'essa pessoa') : 'você'}. Selecione o equipamento abaixo.
+                  </div>
+                  <AutocompleteInput
+                    value={answers.itemManual}
+                    onChange={(it) => updateField('itemManual', it)}
+                    items={computadoresParaEscolha}
+                    getLabel={(it) => `${it.patrimonio} — ${it.descsbpm}`}
+                    getKey={(it) => it.idbem}
+                    placeholder="Busque por patrimônio, descrição ou modelo do computador..."
+                  />
                 </div>
               )}
               <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
                 <button type="button" onClick={resetAll} style={{ flex: 1, padding: '11px 18px', borderRadius: 8, border: '1px solid #e4e4e7', background: '#fff', color: '#3f3f46', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Recomeçar</button>
-                <button type="button" onClick={openTicket} disabled={salvando || (tipoArea === 'suporte_tecnico' && !computadorAuto)}
-                  style={{ flex: 2, padding: '11px 18px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', opacity: salvando ? 0.7 : 1 }}>
-                  {salvando ? 'Abrindo...' : 'Abrir chamado'}
-                </button>
+                {(() => {
+                  const faltaComputador = areaFinal === 'suporte_tecnico' && !computadorAuto && !answers.itemManual;
+                  const abrirDesabilitado = salvando || faltaComputador;
+                  return (
+                    <button type="button" onClick={openTicket} disabled={abrirDesabilitado}
+                      style={{ flex: 2, padding: '11px 18px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600, cursor: abrirDesabilitado ? 'not-allowed' : 'pointer', opacity: abrirDesabilitado ? 0.6 : 1 }}>
+                      {salvando ? 'Abrindo...' : 'Abrir chamado'}
+                    </button>
+                  );
+                })()}
               </div>
             </>
           )}

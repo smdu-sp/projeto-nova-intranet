@@ -31,6 +31,8 @@ export interface Categoria {
   full: string;
   pai: string;
   filho: string | null;
+  /** Setor para o qual chamados dessa categoria são enviados na abertura */
+  area: import('@/lib/helpdesk/tipos-chamado').TipoChamado | null;
 }
 
 export interface Usuario {

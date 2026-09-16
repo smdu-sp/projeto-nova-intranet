@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth/auth";
+import { auth } from '@/lib/auth';
 import { parseItemPatrimonioBody } from "@/lib/helpdesk/item-patrimonio";
 import { prisma } from "@/lib/prisma";
 import { podeAcessarPatrimonioHelpdesk } from "@/lib/permissoes";

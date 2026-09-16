@@ -178,7 +178,27 @@ export default function DetalheEquipamento({ eq }: { eq: EquipamentoDetalhe }) {
 									<div className="flex flex-col gap-2">
 										{eq.discos.map((d) => (
 											<div key={d.id} className="flex justify-between border-b pb-2 text-sm">
-												<span>{d.modelo ?? 'Disco'}</span>
+												<span className="flex flex-col">
+													<span className="flex items-center gap-2">
+														{d.modelo ?? 'Disco'}
+														{d.tipoMidia ? (
+															<span
+																className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+																	d.tipoMidia === 'SSD'
+																		? 'bg-emerald-100 text-emerald-800'
+																		: d.tipoMidia === 'HDD'
+																			? 'bg-amber-100 text-amber-800'
+																			: 'bg-muted text-muted-foreground'
+																}`}
+															>
+																{d.tipoMidia}
+															</span>
+														) : null}
+													</span>
+													{d.modeloFisico ? (
+														<span className="text-xs text-muted-foreground">{d.modeloFisico}</span>
+													) : null}
+												</span>
 												<span className="text-muted-foreground">
 													{fmtMb(d.livreMb)} livre de {fmtMb(d.tamanhoMb)}
 												</span>

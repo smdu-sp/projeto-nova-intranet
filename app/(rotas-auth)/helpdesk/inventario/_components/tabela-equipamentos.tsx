@@ -37,6 +37,7 @@ export default function TabelaEquipamentos({
 	const [status, setStatus] = useState<string>(TODOS);
 	const [unidade, setUnidade] = useState<string>(TODOS);
 	const [patrimonio, setPatrimonio] = useState<string>(TODOS);
+	const [disco, setDisco] = useState<string>(TODOS);
 
 	const columns = useMemo(
 		() => criarColunas(unidades, usuarios),
@@ -52,6 +53,7 @@ export default function TabelaEquipamentos({
 				return false;
 			if (patrimonio === 'com' && !e.itemId) return false;
 			if (patrimonio === 'sem' && e.itemId) return false;
+			if (disco !== TODOS && !e.discos.some((d) => d.tipoMidia === disco)) return false;
 			if (q) {
 				const campos = [
 					e.hostname,
@@ -68,14 +70,15 @@ export default function TabelaEquipamentos({
 			}
 			return true;
 		});
-	}, [data, texto, tipo, status, unidade, patrimonio]);
+	}, [data, texto, tipo, status, unidade, patrimonio, disco]);
 
 	const temFiltro =
 		texto !== '' ||
 		tipo !== TODOS ||
 		status !== TODOS ||
 		unidade !== TODOS ||
-		patrimonio !== TODOS;
+		patrimonio !== TODOS ||
+		disco !== TODOS;
 
 	function limpar() {
 		setTexto('');
@@ -83,6 +86,7 @@ export default function TabelaEquipamentos({
 		setStatus(TODOS);
 		setUnidade(TODOS);
 		setPatrimonio(TODOS);
+		setDisco(TODOS);
 	}
 
 	return (
@@ -142,6 +146,16 @@ export default function TabelaEquipamentos({
 						<SelectItem value={TODOS}>Patrimônio: todos</SelectItem>
 						<SelectItem value="com">Com patrimônio</SelectItem>
 						<SelectItem value="sem">Sem patrimônio</SelectItem>
+					</SelectContent>
+				</Select>
+				<Select value={disco} onValueChange={setDisco}>
+					<SelectTrigger className="w-[150px]">
+						<SelectValue placeholder="Disco" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value={TODOS}>Disco: todos</SelectItem>
+						<SelectItem value="SSD">SSD</SelectItem>
+						<SelectItem value="HDD">HDD</SelectItem>
 					</SelectContent>
 				</Select>
 				{temFiltro ? (

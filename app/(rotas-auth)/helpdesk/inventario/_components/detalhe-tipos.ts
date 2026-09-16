@@ -48,6 +48,8 @@ export type EquipamentoDetalhe = {
 		modelo: string | null;
 		tamanhoMb: number | null;
 		livreMb: number | null;
+		tipoMidia: string | null;
+		modeloFisico: string | null;
 	}[];
 	softwares: {
 		id: number;

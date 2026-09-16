@@ -28,4 +28,5 @@ export type EquipamentoRow = {
   unidade: UnidadeRef | null;
   servidor: UsuarioRef | null;
   item: { idbem: number; patrimonio: string | null } | null;
+  discos: { tipoMidia: string | null; modeloFisico: string | null }[];
 };

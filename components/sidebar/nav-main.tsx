@@ -8,6 +8,7 @@ import {
   CalendarSearch,
   ClipboardCheck,
   FileText,
+  FolderTree,
   House,
   KeyRound,
   Laptop,
@@ -133,6 +134,14 @@ export async function NavMain() {
             </Link>
           </SidebarMenuItem>
           </>
+          ) : null}
+          {hd.gerenciarCategorias ? (
+          <SidebarMenuItem>
+            <Link href="/helpdesk/categorias">
+              <FolderTree className="size-4 opacity-60" />
+              <span>Categorias de chamados</span>
+            </Link>
+          </SidebarMenuItem>
           ) : null}
           <SidebarMenuItem>
             <Link href={rotaChamadosArea("rede_conectividade")}>

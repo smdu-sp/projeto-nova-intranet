@@ -9,6 +9,7 @@ import {
 } from './item-patrimonio/inventario-acoes';
 import { ViewTermos } from './termos-patrimonio/view-termos';
 import { ViewNovoChamadoAssistente } from './wizard-abertura-chamado';
+import { useHideAppSidebar } from '@/components/sidebar/sidebar-visibility';
 import type { BaixaPatrimonio, Chamado, ItemPatrimonio, StatusHistoricoPatrimonio, Transferencia, StatusChamado, Prioridade, TipoEvento, Mensagem, Anexo, Usuario, Unidade, Categoria, TipoChamado } from '../_types';
 import { STATUS_META, PRIORIDADE_META, TIPO_CHAMADO_META, TIPOS_CHAMADO, labelTipoChamado, exigeComputadorNaAbertura } from '../_types';
 import { categoriaCompativelComArea } from '@/lib/helpdesk/tipos-chamado';
@@ -93,6 +94,7 @@ const CAPACIDADES_VAZIAS: CapacidadesHelpdesk = {
   unidades: false,
   relatorios: false,
   gerenciarAcessoSistemas: false,
+  gerenciarCategorias: false,
 };
 
 export function resolveCategoriaId(categorias: Categoria[], pai: string, filho: string): number | null {
@@ -858,6 +860,8 @@ export function HdApp({ initialView = 'dashboard', initialId, initialArea, initi
   const [numToUuid, setNumToUuid] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [erroApi, setErroApi] = useState<string | null>(null);
+
+  useHideAppSidebar(view === 'novo-chamado-assistente');
 
   useEffect(() => {
     fetch('/api/helpdesk/chamados')
@@ -2476,7 +2480,7 @@ function ViewNovoChamado({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categoriasPaiFiltradas = useMemo(() => {
-    const filtradas = categoriasPai.filter(p => categoriaCompativelComArea(p, tipoArea));
+    const filtradas = categoriasPai.filter(p => categoriaCompativelComArea(categorias, p, tipoArea));
     return filtradas.length > 0 ? filtradas : categoriasPai;
   }, [categoriasPai, tipoArea]);
 

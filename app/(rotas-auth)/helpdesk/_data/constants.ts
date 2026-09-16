@@ -32,7 +32,7 @@ const CATEGORIAS_RAW = [
 
 export const CATEGORIAS: Categoria[] = CATEGORIAS_RAW.map((c, i) => {
   const parts = c.split(" > ");
-  return { id: i + 1, nome: parts[parts.length - 1], full: c, pai: parts[0], filho: parts[1] || null };
+  return { id: i + 1, nome: parts[parts.length - 1], full: c, pai: parts[0], filho: parts[1] || null, area: null };
 });
 
 export const CATEGORIAS_PAI = [...new Set(CATEGORIAS.map(c => c.pai))];

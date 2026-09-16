@@ -38,7 +38,7 @@ export function SupportCard({ href }: SupportCardProps) {
 
       <CardFooter>
         <Button asChild className="w-full">
-          <Link href={'#'}>Abrir chamado</Link>
+          <Link href={href}>Abrir chamado</Link>
         </Button>
       </CardFooter>
     </Card>

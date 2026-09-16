@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth/auth";
+import { auth } from '@/lib/auth';
 import { gerarDocumentoTermo } from "@/lib/helpdesk/gerar-termos";
 import { gerarDocumentoTermoPdf } from "@/lib/helpdesk/gerar-termos-pdf";
 import {

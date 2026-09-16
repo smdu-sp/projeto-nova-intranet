@@ -103,6 +103,10 @@ model InvDisco {
   modelo        String? @db.VarChar(200)
   tamanhoMb     Int?
   livreMb       Int?
+  /// "SSD" | "HDD" | "Desconhecido" — mídia física do disco (via Get-PhysicalDisk)
+  tipoMidia     String? @db.VarChar(20)
+  /// FriendlyName do disco físico (ex.: "Samsung SSD 970 EVO 500GB")
+  modeloFisico  String? @db.VarChar(200)
 
   equipamento InvEquipamento @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
 

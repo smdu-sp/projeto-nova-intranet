@@ -71,6 +71,34 @@ export function criarColunas(
 			cell: ({ row }) => row.original.servidor?.nome ?? '—',
 		},
 		{
+			accessorKey: 'discos',
+			header: () => <p className="text-center">Disco</p>,
+			cell: ({ row }) => {
+				const discos = row.original.discos.filter((d) => d.tipoMidia);
+				if (discos.length === 0) return <p className="text-center text-xs text-muted-foreground">—</p>;
+				const tipos = new Map(discos.map((d) => [d.tipoMidia, d.modeloFisico]));
+				return (
+					<div className="flex flex-wrap justify-center gap-1">
+						{[...tipos].map(([t, modelo]) => (
+							<span
+								key={t}
+								title={modelo ?? undefined}
+								className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+									t === 'SSD'
+										? 'bg-emerald-100 text-emerald-800'
+										: t === 'HDD'
+											? 'bg-amber-100 text-amber-800'
+											: 'bg-muted text-muted-foreground'
+								}`}
+							>
+								{t}
+							</span>
+						))}
+					</div>
+				);
+			},
+		},
+		{
 			accessorKey: 'item',
 			header: () => <p className="text-center">Patrimônio</p>,
 			cell: ({ row }) => (

@@ -1,6 +1,6 @@
 import { FormSolicitacaoAcesso } from '@/app/(rotas-auth)/helpdesk/_components/acesso-sistemas/form-solicitacao-acesso';
 import { verificarAcessoPaginaHelpdesk } from '@/lib/helpdesk/verificar-acesso-pagina';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 

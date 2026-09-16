@@ -1,6 +1,6 @@
 import { AcessoNegadoHelpdesk } from '@/app/(rotas-auth)/helpdesk/_components/acesso-negado-helpdesk';
 import { GerenciarPontosFocais } from '@/app/(rotas-auth)/helpdesk/_components/acesso-sistemas/gerenciar-pontos-focais';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@/lib/auth';
 import { podeGerenciarAcessoSistemasHelpdesk } from '@/lib/permissoes';
 
 export default async function PontosFocaisPage() {

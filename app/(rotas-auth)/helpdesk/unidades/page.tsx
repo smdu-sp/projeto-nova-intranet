@@ -1,6 +1,6 @@
 import DataTable, { TableSkeleton } from '@/components/data-table';
 import { AcessoNegadoHelpdesk } from '@/app/(rotas-auth)/helpdesk/_components/acesso-negado-helpdesk';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@/lib/auth';
 import { podeGerenciarUnidadesHelpdesk } from '@/lib/permissoes';
 import { prisma } from '@/lib/prisma';
 import { Suspense } from 'react';

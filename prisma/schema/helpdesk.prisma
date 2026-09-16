@@ -79,6 +79,7 @@ model HdUnidade {
   transferenciasDestino HdTransferenciaCabecalho[]
   pontosFocais          HdPontoFocalUnidade[]
   solicitacoesAcesso    HdSolicitacaoAcesso[]
+  invEquipamentos       InvEquipamento[] @relation("invUnidadeEquipamentos")
   @@map("hd.unidades")
 }
 
@@ -87,6 +88,8 @@ model HdCategoria {
   nome  String  @db.VarChar(200)
   pai   String  @db.VarChar(100)
   filho String? @db.VarChar(100)
+  /// Setor para o qual chamados dessa categoria são enviados na abertura (configurável em /helpdesk/categorias)
+  area  HdTipoChamado?
   ativo Boolean @default(true)
   chamados HdChamado[]
   @@map("hd.categorias")
@@ -318,6 +321,7 @@ model HdItemPatrimonio {
   transferenciaItens HdTransferenciaItem[]
   baixas             HdBaixaPatrimonio[]
   historicoStatus    HdItemPatrimonioStatusHistorico[]
+  equipamento        InvEquipamento? @relation("invItemPatrimonio")
   @@map("hd.itens_patrimonio")
 }
 

@@ -24,6 +24,10 @@ export type ColetaDisco = {
   modelo?: string | null;
   tamanhoMb?: number | null;
   livreMb?: number | null;
+  /** "SSD" | "HDD" | "Desconhecido" — mídia física do disco. */
+  tipoMidia?: string | null;
+  /** FriendlyName do disco físico (ex.: "Samsung SSD 970 EVO 500GB"). */
+  modeloFisico?: string | null;
 };
 
 export type ColetaSoftware = {
@@ -329,6 +333,8 @@ export async function ingerirColeta(
             modelo: limpar(d.modelo, 200),
             tamanhoMb: inteiroOuNull(d.tamanhoMb),
             livreMb: inteiroOuNull(d.livreMb),
+            tipoMidia: limpar(d.tipoMidia, 20),
+            modeloFisico: limpar(d.modeloFisico, 200),
           })),
         });
       }

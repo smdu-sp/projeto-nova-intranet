@@ -117,7 +117,7 @@ export default function BuscasContent({ inicial }: { inicial: SolicitacaoRow[] }
 					</Select>
 					<Input
 						placeholder={
-							tipoAlvo === 'host' ? 'Hostname ou IP (ex.: PC-01 ou 10.75.32.10)' : 'CIDR (ex.: 10.75.32.0/24)'
+							tipoAlvo === 'host' ? 'Hostname ou IP (ex.: PC-01 ou 10.75.32.10)' : 'CIDR /16 a /30 (ex.: 10.75.32.0/21)'
 						}
 						value={alvo}
 						onChange={(e) => setAlvo(e.target.value)}

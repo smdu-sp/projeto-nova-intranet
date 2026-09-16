@@ -42,6 +42,7 @@ export const equipamentoListSelect = {
   unidade: { select: { id: true, nome: true } },
   servidor: { select: { id: true, nome: true } },
   item: { select: { idbem: true, patrimonio: true } },
+  discos: { select: { tipoMidia: true, modeloFisico: true } },
 } as const;
 
 export const equipamentoDetalheSelect = {

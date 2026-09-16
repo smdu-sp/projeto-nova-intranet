@@ -56,6 +56,13 @@ de ingestão `POST /api/inventario/coleta`.
 `Win32_NetworkAdapterConfiguration` (IP/MAC). Softwares vêm do registro
 (`Uninstall`), evitando o `Win32_Product` (lento e dispara reparos de MSI).
 
+Cada disco também traz `tipoMidia` (**SSD** / **HDD** / Desconhecido), via
+`Get-PhysicalDisk`/`Get-Partition` (módulo Storage) mapeados pela letra da
+unidade. Em alguns hosts remotos via WinRM esse provider exige DCOM e pode
+falhar — nesse caso o campo fica vazio, sem interromper a coleta. A tela
+**Inventário → Equipamentos** tem um filtro "Disco" (SSD/HDD) para listar as
+máquinas por tipo de mídia.
+
 ## Agendamento (Windows Task Scheduler)
 
 Rodar, por exemplo, a cada 6 horas:
@@ -74,6 +81,17 @@ Na tela **Inventário → Solicitar buscas** você enfileira alvos e clica em
 **Executar fila agora** — o servidor dispara `coletar.ps1 -FromQueue` (só funciona
 se a app rodar em Windows na rede). O coletor também pode ser agendado no modo
 `-FromQueue` para consumir a fila periodicamente:
+
+Alvo do tipo **sub-rede** aceita CIDR de **/16 a /30** (ex.: `10.75.32.0/21`,
+~2000 hosts). Os IPs candidatos (excluindo rede/broadcast) são testados com
+ping assíncrono em paralelo antes de tentar a coleta — importante para
+sub-redes grandes, onde um teste sequencial levaria dezenas de minutos.
+
+⚠️ O botão "Executar fila agora" dispara o processo e não devolve o
+resultado pra tela (`stdio: ignore`, fire-and-forget) — se a coleta falhar
+(CIDR inválido, WinRM inacessível…), a solicitação só mostra o erro depois
+de atualizar a página e olhar a coluna **Resultado**; ela não fica presa
+silenciosamente, mas também não avisa em tempo real.
 
 ```powershell
 .\coletar.ps1 -ApiUrl http://SERVIDOR:3000/api/inventario/coleta -ApiKey "SUA_CHAVE" -FromQueue -IncludeSoftware

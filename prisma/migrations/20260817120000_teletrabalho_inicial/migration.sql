@@ -1,0 +1,1 @@
+-- Tabelas tt.* já existiam no banco antes desta migração ser versionada (histórico não reconstituído).

@@ -83,43 +83,16 @@ export function exigeComputadorNaAbertura(tipo: TipoChamado): boolean {
   return tipo === "suporte_tecnico";
 }
 
-/** Categorias pai sugeridas por área (filtro na abertura; demais categorias permanecem visíveis) */
-const CATEGORIAS_POR_AREA: Partial<Record<TipoChamado, string[]>> = {
-  suporte_tecnico: [
-    "Computador",
-    "Impressora",
-    "Monitor",
-    "Mouse com defeito",
-    "Scanner",
-    "Plotter",
-    "Configuração",
-    "Backup",
-    "Instalação de hardware",
-    "Instalação de impressora",
-    "Instalação de sistema",
-    "Instalação de Software",
-    "Instalar scanner",
-    "Mudança de equipamento de local",
-  ],
-  acesso_sistemas: [
-    "Liberação de acesso",
-    "Criação de usuário de rede",
-    "Login expirado",
-    "Reset de senha de rede",
-    "Senha de Rede",
-    "Limpeza usuários Intranet/SGU",
-  ],
-  rede_conectividade: ["Rede", "Internet lenta"],
-  reparos_infraestrutura: ["Rede", "Mudança de equipamento de local"],
-};
-
-export function categoriaCompativelComArea(
-  pai: string,
-  tipo: TipoChamado
-): boolean {
-  const lista = CATEGORIAS_POR_AREA[tipo];
-  if (!lista) return true;
-  return lista.some(
-    (c) => c.toLowerCase() === pai.toLowerCase() || pai.toLowerCase().includes(c.toLowerCase())
-  );
+/**
+ * Uma categoria pai é compatível com uma área quando existe alguma categoria
+ * cadastrada com esse `pai` cujo setor configurado (`HdCategoria.area`,
+ * editável em /helpdesk/categorias) é o mesmo da área informada. Categorias
+ * sem setor configurado são consideradas compatíveis com qualquer área.
+ */
+export function categoriaCompativelComArea<
+  C extends { pai: string; area?: TipoChamado | null }
+>(categorias: C[], pai: string, tipo: TipoChamado): boolean {
+  const daPai = categorias.filter((c) => c.pai === pai);
+  if (daPai.length === 0) return true;
+  return daPai.some((c) => !c.area || c.area === tipo);
 }
