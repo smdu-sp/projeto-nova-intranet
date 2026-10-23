@@ -3,8 +3,8 @@ import { Suspense } from 'react';
 import DataTable from '@/components/data-table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { prisma } from '@/lib/prisma';
-import { columns } from './_components/columns';
-import ModalUpdateAndCreate from './_components/modal-update-create';
+// import { columns } from './_components/columns';
+// import ModalUpdateAndCreate from './_components/modal-update-create';
 
 export default async function SalasPage() {
     const session = await auth();
@@ -61,10 +61,10 @@ async function SalasContente() {
 				Cadastre salas de reunião com nome, andar, número, lotação e layout.
 			</p>
 			<div className="flex flex-col max-w-sm mx-auto md:max-w-full gap-3 my-5 w-full">
-				<DataTable columns={columns} data={lista} />
+				{/* <DataTable columns={columns} data={lista} /> */}
 			</div>
 			<div className="absolute bottom-10 md:bottom-5 right-2 md:right-8 hover:scale-110">
-				<ModalUpdateAndCreate isUpdating={false} />
+				{/* <ModalUpdateAndCreate isUpdating={false} /> */}
 			</div>
 		</div>
 	);

@@ -101,12 +101,18 @@ export async function criarReserva(
     where: { id: salaId, ativo: true },
     select: {
       id: true,
+      lotacao: true,
       layout: true,
       layoutFotos: { select: { id: true, descricao: true } },
     },
   });
   if (!salaReserva) {
     return { erro: "Sala inválida ou inativa." };
+  }
+  if (salaReserva.lotacao !== null && numeroParticipantes > salaReserva.lotacao) {
+    return {
+      erro: `A sala selecionada comporta no máximo ${salaReserva.lotacao} participantes.`,
+    };
   }
 
   let salaLayoutFotoId: string | null = null;

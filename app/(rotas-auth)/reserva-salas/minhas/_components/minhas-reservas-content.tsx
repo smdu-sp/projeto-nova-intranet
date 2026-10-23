@@ -19,7 +19,8 @@ export async function MinhasReservasContent({ usuarioLogin }: MinhasReservasCont
           </Link>
         </p>
       ) : (
-        <MinhasReservasTable reservas={reservas} />
+        //fixme: precisa passar o total de itens do servidor
+        <MinhasReservasTable reservas={reservas} totalItens={reservas.length} />
       )}
     </div>
   );

@@ -1,25 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 const HORA_INICIO = 9;
 const HORA_FIM = 19;
 const MINUTOS_TOTAL = (HORA_FIM - HORA_INICIO) * 60;
 
-type ReservaAgenda = {
+export type ReservaAgenda = {
   id: string;
   inicio: string;
   fim: string;
   titulo?: string;
   usuarioNome?: string | null;
 };
-
-function parseLocalDay(dateStr: string): { start: Date; end: Date } {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const start = new Date(y, m - 1, d, HORA_INICIO, 0, 0);
-  const end = new Date(y, m - 1, d, HORA_FIM, 0, 0);
-  return { start, end };
-}
 
 function minutosDesdeNoveHoras(d: Date): number {
   const h = d.getHours();
@@ -32,30 +23,18 @@ export function AgendaSala({
   data,
   salaNome,
   isAdmin = false,
+  reservas,
+  loading,
+  erro,
 }: {
   salaId: string | null;
   data: string | null;
   salaNome: string;
   isAdmin?: boolean;
+  reservas: ReservaAgenda[];
+  loading: boolean;
+  erro: string | null;
 }) {
-  const [reservas, setReservas] = useState<ReservaAgenda[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!salaId || !data) {
-      setReservas([]);
-      return;
-    }
-    setLoading(true);
-    fetch(`/api/reservas?salaId=${encodeURIComponent(salaId)}&data=${data}`)
-      .then((r) => r.json())
-      .then((data) => {
-        setReservas(Array.isArray(data) ? data : []);
-      })
-      .catch(() => setReservas([]))
-      .finally(() => setLoading(false));
-  }, [salaId, data]);
-
   if (!salaId || !data) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/30 p-8 text-center min-h-[400px]">
@@ -66,7 +45,6 @@ export function AgendaSala({
     );
   }
 
-  const { start: dayStart } = parseLocalDay(data);
   const horas: number[] = [];
   for (let h = HORA_INICIO; h < HORA_FIM; h++) horas.push(h);
 
@@ -124,6 +102,10 @@ export function AgendaSala({
               <span className="text-sm text-muted-foreground">
                 Carregando agenda...
               </span>
+            </div>
+          ) : erro ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted/20 p-4 text-center">
+              <span className="text-sm text-destructive">{erro}</span>
             </div>
           ) : (
             <>

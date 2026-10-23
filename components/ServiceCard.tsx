@@ -1,4 +1,4 @@
-import { listarPermissoes } from "@/services/permissoes";
+import { listarPermissoes, verificarDesenvolvedor } from "@/services/permissoes";
 import { ArrowRight, CalendarSearch, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 
@@ -33,8 +33,15 @@ const modulos = [
 export default async function ServiceCards() {
   let modulosFiltrados: IModulo[] = [];
   try {
-    const permissoes = await listarPermissoes();
-    modulosFiltrados = modulos.filter((modulo) => permissoes.includes(modulo.permissao));
+    const [permissoes, desenvolvedor] = await Promise.all([
+      listarPermissoes(),
+      verificarDesenvolvedor(),
+    ]);
+    modulosFiltrados = modulos.filter((modulo) =>
+      modulo.nome === "avaliacao-limpeza"
+        ? desenvolvedor
+        : permissoes.includes(modulo.permissao)
+    );
   } catch (error) {
     console.error("Erro ao listar permissões:", error);
     modulosFiltrados = [];

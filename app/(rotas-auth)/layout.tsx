@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { verificarDesenvolvedor } from "@/services/permissoes";
 
 export default async function RotasAuth({
   children,
@@ -20,6 +21,7 @@ export default async function RotasAuth({
 }) {
   const session = await auth();
   if (!session) redirect("/login");
+  const desenvolvedor = await verificarDesenvolvedor();
   return (
     <div className="relative w-full">
       <ModeToggle className="absolute top-4 right-4 z-50" />
@@ -40,7 +42,7 @@ export default async function RotasAuth({
             {children}
           </div>
         </SidebarInset>
-        <DrawerMenu />
+        <DrawerMenu desenvolvedor={desenvolvedor} />
       </SidebarProvider>
     </div>
   );

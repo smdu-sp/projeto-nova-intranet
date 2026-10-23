@@ -33,7 +33,7 @@ import {
 import { ScrollArea } from './ui/scroll-area';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
 
-export function DrawerMenu() {
+export function DrawerMenu({ desenvolvedor }: { desenvolvedor: boolean }) {
 	interface IMenu {
 		icone: ForwardRefExoticComponent<
 			Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
@@ -41,6 +41,7 @@ export function DrawerMenu() {
 		titulo: string;
 		url?: string;
 		permissao?: string;
+		apenasDesenvolvedor?: boolean;
 		subItens?: ISubMenu[];
 	}
 
@@ -65,7 +66,7 @@ export function DrawerMenu() {
 			icone: ClipboardCheck,
 			titulo: 'Avaliação de Limpeza',
 			url: '/avaliacao-limpeza',
-			permissao: 'avaliacao_limpeza_usuario',
+			apenasDesenvolvedor: true,
 		}
 	];
 
@@ -112,7 +113,9 @@ export function DrawerMenu() {
 					<div className='mx-auto w-full px-4'>
 						<div className='p-4 pb-0'>
 							<ul className='flex w-full min-w-0 flex-col gap-1'>
-								{menuUsuario.map((item) =>
+								{menuUsuario
+									.filter((item) => !item.apenasDesenvolvedor || desenvolvedor)
+									.map((item) =>
 									item.subItens && item.subItens.length > 0 ? (
 										<Collapsible
 											asChild

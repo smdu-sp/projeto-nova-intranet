@@ -39,6 +39,7 @@ export async function NavMain() {
     titulo: string;
     url?: string;
     permissao?: string;
+    apenasDesenvolvedor?: boolean;
     subItens?: ISubMenu[];
   }
 
@@ -68,11 +69,12 @@ export async function NavMain() {
       icone: ClipboardCheck,
       titulo: "Avaliação de Limpeza",
       url: "/avaliacao-limpeza",
-      permissao: "avaliacao_limpeza.avaliacoes.visualizar",
+      apenasDesenvolvedor: true,
     },
   ];
   const setPermissoes = new Set(permissoes);
   const menuModulosFiltrados = menuModulos.filter((item) => {
+    if (item.apenasDesenvolvedor) return mostraAdmin;
     if (!item.permissao) return true;
     return setPermissoes.has(item.permissao);
   });

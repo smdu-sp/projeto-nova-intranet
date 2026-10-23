@@ -448,16 +448,18 @@ export default function FormSala({
             <button
               key={s.id}
               type="button"
+              disabled={i > step}
+              aria-current={i === step ? "step" : undefined}
               onClick={() => {
                 if (i <= step) setStep(i);
               }}
               className={cn(
-                "flex items-center gap-2 rounded-md border px-2 py-1.5 text-xs transition-colors",
+                "flex items-center gap-2 rounded-md border px-2 py-1.5 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 i === step
-                  ? "border-primary bg-primary/10 text-foreground"
+                  ? "border-primary bg-primary/10 text-foreground enabled:cursor-pointer enabled:hover:bg-primary/15"
                   : i < step
-                    ? "border-border bg-muted/40 text-muted-foreground hover:bg-muted/60"
-                    : "border-dashed border-border text-muted-foreground opacity-70",
+                    ? "border-border bg-muted/40 text-muted-foreground enabled:cursor-pointer enabled:hover:border-primary/60 enabled:hover:bg-primary/10 enabled:hover:text-foreground"
+                    : "border-dashed border-border text-muted-foreground opacity-70 disabled:cursor-not-allowed",
               )}
             >
               <span
