@@ -182,6 +182,36 @@
   stroke: #000000 !important;
 }
 
+/* Linha do tempo e Modal de Campanhas em Alto Contraste */
+.high-contrast div.campaign-timeline-line,
+.high-contrast div.campaign-timeline-dot {
+  background-color: #ffcc00 !important;
+}
+
+.high-contrast div.campaign-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.78) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.high-contrast div.campaign-modal-content {
+  background-color: transparent !important;
+}
+
+.high-contrast div.campaign-zoom-overlay {
+  background-color: rgba(0, 0, 0, 0.55) !important;
+}
+
+.high-contrast .campaign-modal-backdrop button {
+  background-color: #ffcc00 !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+}
+
+.high-contrast .campaign-modal-backdrop button svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
 
 
 

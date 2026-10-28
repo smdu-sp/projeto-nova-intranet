@@ -15,6 +15,7 @@ export function Header() {
     { label: "Início", href: "/mockup" },
     { label: "Fale conosco", href: "/mockup/fale-conosco" },
     { label: "Informações", href: "/mockup/informacoes" },
+    { label: "Campanhas", href: "/mockup/campanhas" },
     { label: "Vídeos", href: "/mockup/videos" },
     { label: "Equipe", href: "/mockup/equipe" },
     { label: "Parcerias", href: "/mockup/parcerias" },
@@ -51,7 +52,7 @@ export function Header() {
 
         {/* Menu Desktop */}
         <nav className="hidden md:block">
-          <ul className="flex items-center gap-2 lg:gap-4 transition-all duration-300">
+          <ul className="flex items-center gap-1.5 lg:gap-3 transition-all duration-300">
             {navItems.map((item) => {
               const isActive = pathname === item.href || pathname === `${item.href}/` || (item.href !== "/mockup" && pathname?.startsWith(item.href));
 
@@ -59,7 +60,7 @@ export function Header() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`text-sm font-bold px-3 py-1.5 lg:px-4 rounded-full transition-all duration-200 block ${
+                    className={`text-sm font-bold px-2.5 py-1.5 lg:px-3.5 rounded-full whitespace-nowrap transition-all duration-200 block ${
                       isActive ? "bg-[#1f7a3d] text-white shadow-sm" : "text-gray-900 hover:text-green-700 hover:bg-gray-100"
                     }`}
                   >
