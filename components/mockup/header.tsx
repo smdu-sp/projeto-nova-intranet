@@ -16,8 +16,8 @@ export function Header() {
     { label: "Fale conosco", href: "/mockup/fale-conosco" },
     { label: "Informações", href: "/mockup/informacoes" },
     { label: "Vídeos", href: "/mockup/videos" },
-    { label: "Equipe", href: "/mockup/integrantes" },
-    { label: "Parceiros", href: "/mockup/parcerias" },
+    { label: "Equipe", href: "/mockup/equipe" },
+    { label: "Parcerias", href: "/mockup/parcerias" },
   ];
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
