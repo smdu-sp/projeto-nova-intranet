@@ -71,11 +71,11 @@ export default function home() {
             )}
           </section>
           <section className="flex flex-1 flex-col gap-4">
-            <p className="font-bold text-lg">Nosso cartaz do mês</p>
+            <p className="font-bold text-lg">Campanha do mês</p>
             <p className="text-sm text-gray-500 max-w-[85ch]">
               Atualizado periodicamente pela CIPA. Arraste uma nova imagem no quadro ao lado para substituir o cartaz atual — os cartazes anteriores ficam guardados na área de Conteúdos.
             </p>
-            <Button className="max-w-52 bg-[#f5f5f7] text-black font-bold p-2" onClick={() => alert("Funcionou ")} title={"Ver Cartazes anteriores"} icon={<ArrowRight size={14} />} />
+            <Button className="max-w-52 bg-[#f5f5f7] text-black font-bold p-2" onClick={() => alert("Funcionou ")} title={"Campanhas Anteriores"} icon={<ArrowRight size={14} />} />
           </section>
         </div>
         <div className="flex flex-col gap-4 rounded-lg py-8 mb-8 px-6">

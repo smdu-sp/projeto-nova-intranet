@@ -24,41 +24,36 @@ export const MockInfo: MockInfoProps[] = [
   },
   {
     id: 3,
-    title: "Cartazes anteriores",
-    description: "Reveja os cartazes já publicados pela CIPA.",
-  },
-  {
-    id: 4,
     title: "CAT",
     description: "Comunicação de Acidente de Trabalho — como fazer, onde procurar.",
   },
   {
-    id: 5,
+    id: 4,
     title: "Legislação",
     description: "Normas e legislação sobre segurança e saúde no trabalho.",
   },
   {
-    id: 6,
+    id: 5,
     title: "Mapa de risco",
     description: "Mapeamento dos riscos identificados por setor.",
   },
   {
-    id: 7,
+    id: 6,
     title: "Assédio",
     description: "Informações sobre prevenção e acolhimento em casos de assédio.",
   },
   {
-    id: 8,
+    id: 7,
     title: "Calendário de reuniões e atas",
     description: "Datas dos encontros da CIPA e atas já registradas.",
   },
   {
-    id: 9,
+    id: 8,
     title: "Perguntas frequentes",
     description: "Dúvidas comuns sobre a CIPA e como ela atua.",
   },
   {
-    id: 10,
+    id: 9,
     title: "Artigos",
     description: "Textos e materiais aprofundando nossos temas.",
   },

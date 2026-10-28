@@ -1,15 +1,7 @@
 import PreviousPage from "@/components/mockup/PreviousPage";
-import { MockEvents } from "./mockEvents";
+import { mockTalkWithUs } from "./mockTalkWithUs";
 
 const mockDirectors = [
-  {
-    name: "Cristiane Oliveira",
-    position: "1° secretária - CONTRU",
-  },
-  {
-    name: "Hélio Freitas Filho",
-    position: "2º secretário · SERVIN",
-  },
   {
     name: "Leila Souza Petrini",
     position: "Presidente · PARHIS",
@@ -17,6 +9,14 @@ const mockDirectors = [
   {
     name: "Rosemeire de Almeida",
     position: "Vice-presidente · GEOINFO",
+  },
+  {
+    name: "Analice Barbosa Dos Santos",
+    position: "1° secretária - CASE",
+  },
+  {
+    name: "Hélio Freitas Filho",
+    position: "2º secretário · SERVIN",
   },
 ];
 
@@ -29,7 +29,7 @@ export default function Eventos() {
         <p className="text-gray-500 font-light text-base max-w-[65ch]">Pode usar nosso e-mail, deixar seu recado em nossas caixas ou falar diretamente com um de nós.</p>
       </div>
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {MockEvents.map(({ id, icon, title, description, isLink, href, variant }) => {
+        {mockTalkWithUs.map(({ id, icon, title, description, isLink, href, variant }) => {
           const isHighlight = variant === "highlight";
 
           return (

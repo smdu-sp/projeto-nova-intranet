@@ -13,8 +13,8 @@ export function Header() {
 
   const navItems = [
     { label: "Início", href: "/mockup" },
-    { label: "Fale com a gente", href: "/mockup/eventos" },
-    { label: "Conteúdos", href: "/mockup/informacoes" },
+    { label: "Fale conosco", href: "/mockup/fale-conosco" },
+    { label: "Informações", href: "/mockup/informacoes" },
     { label: "Vídeos", href: "/mockup/videos" },
     { label: "Equipe", href: "/mockup/integrantes" },
     { label: "Parceiros", href: "/mockup/parcerias" },

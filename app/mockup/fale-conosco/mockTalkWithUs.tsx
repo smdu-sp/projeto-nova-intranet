@@ -1,7 +1,7 @@
 import { Mailbox, MailIcon, Shield } from "lucide-react";
 import { ReactNode } from "react";
 
-export interface MockEventItem {
+export interface mockTalkWithUsProps {
   id: number;
   icon: ReactNode;
   title: string;
@@ -11,7 +11,7 @@ export interface MockEventItem {
   variant?: "default" | "highlight";
 }
 
-export const MockEvents: MockEventItem[] = [
+export const mockTalkWithUs: mockTalkWithUsProps[] = [
   {
     id: 1,
     icon: <MailIcon size={18} className="text-gray-800" />,
@@ -36,4 +36,3 @@ export const MockEvents: MockEventItem[] = [
     variant: "highlight",
   },
 ];
-
