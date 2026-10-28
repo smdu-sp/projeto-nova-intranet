@@ -106,8 +106,6 @@ const STEPS: Record<string, StepDef> = {
       { label: 'Telefone ou ramal', desc: 'Telefone, ramal, chamadas ou áudio.', icon: 'phone', next: 'diag_tel_tipo', set: { area: 'telefonia_voip' } },
       { label: 'Acesso a um sistema', desc: 'Login, senha, bloqueio ou permissão.', icon: 'key', next: 'diag_acesso_sistema', set: { area: 'acesso_sistemas' } },
       { label: 'Internet ou rede', desc: 'Internet lenta, sem conexão, Wi-Fi, rede cabeada etc.', icon: 'wifi', next: 'diag_rede_tipo', set: { area: 'rede_conectividade' } },
-      { label: 'Ambiente físico', desc: 'Ar-condicionado, iluminação, tomada, mobiliário, infiltração etc.', icon: 'wrench', next: 'diag_infra_tipo', set: { area: 'reparos_infraestrutura' } },
-      { label: 'Não sei qual é o problema', desc: 'A gente ajuda você a descobrir.', icon: 'help', next: 'diag_incerto_internet', set: { area: null } },
     ],
   },
   diag_suporte_equip: {
@@ -138,15 +136,7 @@ const STEPS: Record<string, StepDef> = {
     type: 'choice', phase: 'diag', title: 'Outros equipamentos ligados na mesma tomada funcionam?',
     options: [
       { label: 'Sim, funcionam normalmente', next: 'detalhes', set: { subcategoria: 'Computador e monitor sem energia', categoriaPai: 'Computador', categoriaFilho: 'Não liga' } },
-      { label: 'Não, nada liga nessa tomada', next: 'sugestao_infra', set: {} },
-    ],
-  },
-  sugestao_infra: {
-    type: 'sugestao', phase: 'diag', title: 'Isso parece um problema elétrico',
-    sugestaoMotivoDisplay: 'Como nenhum equipamento da tomada liga, o mais provável é falta de energia no ponto — e não um defeito do computador.',
-    options: [
-      { label: 'Encaminhar para Reparos de Infraestrutura', next: 'diag_infra_local', set: { area: 'reparos_infraestrutura', subcategoria: 'Falta de energia no ponto', categoriaPai: '', categoriaFilho: '' } },
-      { label: 'Não, manter em Suporte Técnico', next: 'detalhes', set: { subcategoria: 'Computador sem energia', categoriaPai: 'Computador', categoriaFilho: 'Não liga' } },
+      { label: 'Não, nada liga nessa tomada', next: 'detalhes', set: { subcategoria: 'Computador sem energia', categoriaPai: 'Computador', categoriaFilho: 'Não liga' } },
     ],
   },
   diag_tel_tipo: {
@@ -186,15 +176,6 @@ const STEPS: Record<string, StepDef> = {
       { label: 'Não, manter em Acesso a Sistemas', next: 'diag_acesso_mensagem', set: {} },
     ],
   },
-  diag_acesso_mensagem: {
-    type: 'choice', phase: 'diag', title: 'Qual mensagem aparece na tela?',
-    options: [
-      { label: 'Usuário ou senha incorretos', next: 'acesso_redirect', set: { subcategoria: 'Usuário ou senha incorretos' } },
-      { label: 'Sem permissão / acesso bloqueado', next: 'acesso_redirect', set: { subcategoria: 'Sem permissão / acesso bloqueado' } },
-      { label: 'Erro do sistema', next: 'acesso_redirect', set: { subcategoria: 'Erro do sistema' } },
-      { label: 'Nenhuma mensagem / outro', next: 'acesso_redirect', set: { subcategoria: 'A classificar' } },
-    ],
-  },
   diag_rede_tipo: {
     type: 'choice', phase: 'diag', title: 'Como está o problema de conexão?',
     options: [
@@ -223,65 +204,13 @@ const STEPS: Record<string, StepDef> = {
       { label: 'Não', next: 'detalhes', set: { abrangencia: 'Somente eu' } },
     ],
   },
-  diag_infra_tipo: {
-    type: 'choice', phase: 'diag', title: 'O que precisa de manutenção?',
+  diag_acesso_mensagem: {
+    type: 'choice', phase: 'diag', title: 'Qual mensagem aparece na tela?',
     options: [
-      { label: 'Iluminação', next: 'diag_infra_risco', set: { subcategoria: 'Iluminação' } },
-      { label: 'Ar-condicionado', next: 'diag_infra_risco', set: { subcategoria: 'Ar-condicionado' } },
-      { label: 'Tomada / energia', next: 'diag_infra_risco', set: { subcategoria: 'Tomada / energia' } },
-      { label: 'Hidráulica / vazamento', next: 'diag_infra_risco', set: { subcategoria: 'Hidráulica / vazamento' } },
-      { label: 'Porta / fechadura', next: 'diag_infra_risco', set: { subcategoria: 'Porta / fechadura' } },
-      { label: 'Mobiliário', next: 'diag_infra_risco', set: { subcategoria: 'Mobiliário' } },
-      { label: 'Parede / teto / piso', next: 'diag_infra_risco', set: { subcategoria: 'Parede / teto / piso' } },
-      { label: 'Elevador', next: 'diag_infra_risco', set: { subcategoria: 'Elevador' } },
-      { label: 'Limpeza', next: 'diag_infra_risco', set: { subcategoria: 'Limpeza' } },
-      { label: 'Dedetização / pragas', next: 'diag_infra_risco', set: { subcategoria: 'Dedetização / pragas' } },
-      { label: 'Outro', next: 'diag_infra_risco', set: { subcategoria: 'Outro' } },
-    ],
-  },
-  diag_infra_risco: {
-    type: 'choice', phase: 'diag', title: 'Existe algum risco imediato para pessoas ou patrimônio?',
-    options: [
-      { label: 'Sim, há risco imediato', next: 'diag_infra_local', set: { urgent: true, prioridadeLabel: 'Máxima' } },
-      { label: 'Não', next: 'diag_infra_local', set: {} },
-    ],
-  },
-  diag_infra_local: {
-    type: 'form', phase: 'diag', title: 'Onde está o problema?', next: 'detalhes',
-    fields: [
-      { key: 'unidade', label: 'Unidade', type: 'unidade', required: true },
-      { key: 'local', label: 'Prédio, andar e sala (opcional)', type: 'text', placeholder: 'ex.: Edifício Martinelli, 8º andar' },
-    ],
-  },
-  diag_incerto_internet: {
-    type: 'choice', phase: 'diag', title: 'Você consegue acessar a internet normalmente?',
-    options: [
-      { label: 'Sim', next: 'diag_incerto_sistema', set: {} },
-      { label: 'Não', next: 'diag_incerto_outros_sem_net', set: { area: 'rede_conectividade', subcategoria: 'Sem internet', categoriaPai: 'Rede', categoriaFilho: 'Sem internet' } },
-    ],
-  },
-  diag_incerto_outros_sem_net: {
-    type: 'choice', phase: 'diag', title: 'Outras pessoas também estão sem acesso?',
-    options: [
-      { label: 'Sim', next: 'detalhes', set: { abrangencia: 'Mais de uma pessoa', prioridadeLabel: 'Alta' } },
-      { label: 'Não', next: 'detalhes', set: {} },
-      { label: 'Não sei', next: 'detalhes', set: {} },
-    ],
-  },
-  diag_incerto_sistema: {
-    type: 'choice', phase: 'diag', title: 'O problema é para acessar um sistema específico?',
-    options: [
-      { label: 'Sim', next: 'diag_acesso_mensagem', set: { area: 'acesso_sistemas' } },
-      { label: 'Não', next: 'diag_incerto_tipo', set: {} },
-    ],
-  },
-  diag_incerto_tipo: {
-    type: 'choice', phase: 'diag', title: 'É um problema com computador, telefone ou ambiente físico?',
-    options: [
-      { label: 'Computador ou equipamento', next: 'diag_suporte_equip', set: { area: 'suporte_tecnico' } },
-      { label: 'Telefone ou ramal', next: 'diag_tel_tipo', set: { area: 'telefonia_voip' } },
-      { label: 'Ambiente físico', next: 'diag_infra_tipo', set: { area: 'reparos_infraestrutura' } },
-      { label: 'Nenhum desses / prefiro descrever', next: 'detalhes', set: { area: 'suporte_tecnico', subcategoria: 'A classificar' } },
+      { label: 'Usuário ou senha incorretos', next: 'acesso_redirect', set: { subcategoria: 'Usuário ou senha incorretos' } },
+      { label: 'Sem permissão / acesso bloqueado', next: 'acesso_redirect', set: { subcategoria: 'Sem permissão / acesso bloqueado' } },
+      { label: 'Erro do sistema', next: 'acesso_redirect', set: { subcategoria: 'Erro do sistema' } },
+      { label: 'Nenhuma mensagem / outro', next: 'acesso_redirect', set: { subcategoria: 'A classificar' } },
     ],
   },
   urgente_tipo: {
@@ -399,10 +328,6 @@ function Icone({ nome }: { nome: IconeOpcao }) {
       return <svg {...common}><circle cx="7.5" cy="15.5" r="5.5" /><path d="m21 2-9.6 9.6" /><path d="m15.5 7.5 3 3L22 7l-3-3" /></svg>;
     case 'wifi':
       return <svg {...common}><path d="M5 12.55a11 11 0 0 1 14.08 0" /><path d="M1.42 9a16 16 0 0 1 21.16 0" /><path d="M8.53 16.11a6 6 0 0 1 6.95 0" /><circle cx="12" cy="20" r="1" /></svg>;
-    case 'wrench':
-      return <svg {...common}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>;
-    case 'help':
-      return <svg {...common}><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>;
   }
 }
 

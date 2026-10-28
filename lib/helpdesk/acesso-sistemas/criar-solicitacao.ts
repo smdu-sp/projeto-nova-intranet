@@ -39,6 +39,25 @@ export async function criarSolicitacaoAcesso(params: {
     throw new Error("Somente o ponto focal da unidade pode abrir solicitações de acesso");
   }
 
+  if (!input.paraSiMesmo && input.beneficiarioUsuarioId && !isStaff) {
+    const [autor, beneficiario] = await Promise.all([
+      prisma.usuario.findUnique({ where: { id: autorId }, select: { coordenadoriaId: true } }),
+      prisma.usuario.findUnique({
+        where: { id: input.beneficiarioUsuarioId },
+        select: { coordenadoriaId: true },
+      }),
+    ]);
+    if (
+      autor?.coordenadoriaId &&
+      beneficiario?.coordenadoriaId &&
+      autor.coordenadoriaId !== beneficiario.coordenadoriaId
+    ) {
+      throw new Error(
+        "O beneficiário precisa ser um servidor da mesma coordenadoria do ponto focal"
+      );
+    }
+  }
+
   const [unidade, sistema, permissao] = await Promise.all([
     prisma.hdUnidade.findFirst({ where: { id: input.unidadeId, ativo: true } }),
     prisma.hdSistemaAcesso.findFirst({ where: { id: input.sistemaId, ativo: true } }),

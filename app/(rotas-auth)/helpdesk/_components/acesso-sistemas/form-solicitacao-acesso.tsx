@@ -19,6 +19,7 @@ type UsuarioLocal = {
   nome: string;
   login: string;
   email?: string;
+  coordenadoriaId?: string | null;
 };
 
 export function FormSolicitacaoAcesso({
@@ -172,7 +173,11 @@ export function FormSolicitacaoAcesso({
                 }}
                 nomeInicial={nomeBeneficiario || undefined}
                 placeholder="Digite o nome ou login do servidor..."
+                coordenadoriaId={usuarioLogado.coordenadoriaId}
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Apenas servidores da sua coordenadoria podem ser selecionados.
+              </p>
             </div>
           )}
         </fieldset>

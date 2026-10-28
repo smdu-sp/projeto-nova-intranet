@@ -13,9 +13,11 @@ export async function GET(request: Request) {
   if (q.length < 2) {
     return NextResponse.json([]);
   }
+  const coordenadoriaId = searchParams.get("coordenadoriaId")?.trim() || undefined;
   const usuarios = await prisma.usuario.findMany({
     where: {
       status: true,
+      ...(coordenadoriaId ? { coordenadoriaId } : {}),
       OR: [
         { nome: { contains: q } },
         { nomeSocial: { contains: q } },

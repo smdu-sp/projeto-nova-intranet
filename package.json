@@ -12,7 +12,8 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
-    "db:seed:mock": "tsx prisma/seed-mock-unidades-coordenadorias.ts"
+    "db:seed:mock": "tsx prisma/seed-mock-unidades-coordenadorias.ts",
+    "db:seed:unidades-sgu": "tsx prisma/seed-unidades-sgu.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

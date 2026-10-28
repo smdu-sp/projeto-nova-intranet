@@ -12,7 +12,7 @@ export default async function NovoAcessoSistemasPage() {
 
   const usuario = await prisma.usuario.findFirst({
     where: { login, status: true },
-    select: { id: true, nome: true, login: true, email: true },
+    select: { id: true, nome: true, login: true, email: true, coordenadoriaId: true },
   });
   if (!usuario) redirect('/login');
 

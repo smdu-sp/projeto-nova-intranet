@@ -23,6 +23,8 @@ interface CampoBuscaUsuarioProps {
 	permitirVazio?: boolean;
 	labelVazio?: string;
 	className?: string;
+	/** Restringe a busca a usuários desta coordenadoria */
+	coordenadoriaId?: string | null;
 }
 
 export function CampoBuscaUsuario({
@@ -35,6 +37,7 @@ export function CampoBuscaUsuario({
 	permitirVazio = false,
 	labelVazio = 'Sem responsável',
 	className,
+	coordenadoriaId,
 }: CampoBuscaUsuarioProps) {
 	const selecionado = !!value && value !== vazioValue;
 	const [query, setQuery] = useState(
@@ -76,9 +79,9 @@ export function CampoBuscaUsuario({
 		timer.current = setTimeout(async () => {
 			setCarregando(true);
 			try {
-				const r = await fetch(
-					`/api/usuarios/busca?q=${encodeURIComponent(query.trim())}`,
-				);
+				const params = new URLSearchParams({ q: query.trim() });
+				if (coordenadoriaId) params.set('coordenadoriaId', coordenadoriaId);
+				const r = await fetch(`/api/usuarios/busca?${params.toString()}`);
 				setResultados(r.ok ? await r.json() : []);
 			} catch {
 				setResultados([]);
@@ -90,7 +93,7 @@ export function CampoBuscaUsuario({
 		return () => {
 			if (timer.current) clearTimeout(timer.current);
 		};
-	}, [query]);
+	}, [query, coordenadoriaId]);
 
 	function limpar() {
 		onChange(vazioValue);

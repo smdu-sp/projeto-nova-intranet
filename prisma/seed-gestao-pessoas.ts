@@ -9,6 +9,7 @@ import { GP_EH_DGP, GP_PERMISSOES } from "../lib/gestao-pessoas/constants";
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : undefined,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
