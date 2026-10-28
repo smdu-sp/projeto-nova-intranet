@@ -13,7 +13,9 @@
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
     "db:seed:mock": "tsx prisma/seed-mock-unidades-coordenadorias.ts",
-    "db:seed:unidades-sgu": "tsx prisma/seed-unidades-sgu.ts"
+    "db:seed:unidades-sgu": "tsx prisma/seed-unidades-sgu.ts",
+    "db:seed:usuarios-sgu": "tsx prisma/seed-usuarios-sgu.ts",
+    "db:seed:equipamentos-sisgp": "tsx prisma/seed-equipamentos-sisgp.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
