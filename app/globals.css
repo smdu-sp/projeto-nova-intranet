@@ -146,6 +146,11 @@
   text-decoration: none !important;
 }
 
+.high-contrast header a:hover,
+.high-contrast a[class*="hover:bg-gray-100"]:hover {
+  color: #000000 !important;
+}
+
 /* Item ativo da navegação do header em alto contraste (Pílula amarela com texto preto) */
 .high-contrast header a.bg-\[\#1f7a3d\],
 .high-contrast header a[class*="bg-[#1f7a3d]"] {
