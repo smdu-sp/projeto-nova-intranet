@@ -86,7 +86,7 @@ const STEP_PARA_QUEM = 'para_quem';
 const AREA_ENTRY_STEP: Record<TipoChamado, string> = {
   suporte_tecnico: 'diag_suporte_equip',
   telefonia_voip: 'diag_tel_tipo',
-  acesso_sistemas: 'diag_acesso_sistema',
+  acesso_sistemas: 'diag_acesso_novo',
   rede_conectividade: 'diag_rede_tipo',
   reparos_infraestrutura: 'diag_infra_tipo',
 };
@@ -104,7 +104,7 @@ const STEPS: Record<string, StepDef> = {
     options: [
       { label: 'Computador ou equipamento', desc: 'Computador, monitor, teclado, mouse, impressora etc.', icon: 'monitor', next: 'diag_suporte_equip', set: { area: 'suporte_tecnico' } },
       { label: 'Telefone ou ramal', desc: 'Telefone, ramal, chamadas ou áudio.', icon: 'phone', next: 'diag_tel_tipo', set: { area: 'telefonia_voip' } },
-      { label: 'Acesso a um sistema', desc: 'Login, senha, bloqueio ou permissão.', icon: 'key', next: 'diag_acesso_sistema', set: { area: 'acesso_sistemas' } },
+      { label: 'Acesso a um sistema', desc: 'Login, senha, bloqueio ou permissão.', icon: 'key', next: 'diag_acesso_novo', set: { area: 'acesso_sistemas' } },
       { label: 'Internet ou rede', desc: 'Internet lenta, sem conexão, Wi-Fi, rede cabeada etc.', icon: 'wifi', next: 'diag_rede_tipo', set: { area: 'rede_conectividade' } },
     ],
   },
@@ -146,6 +146,14 @@ const STEPS: Record<string, StepDef> = {
       { label: 'Ramal não recebe chamadas', next: 'detalhes', set: { subcategoria: 'Ramal não recebe chamadas' } },
       { label: 'Sem áudio ou áudio ruim', next: 'detalhes', set: { subcategoria: 'Sem áudio / áudio ruim' } },
       { label: 'Outro problema', next: 'detalhes', set: { subcategoria: 'Outro problema de telefonia' } },
+    ],
+  },
+  diag_acesso_novo: {
+    type: 'choice', phase: 'diag', title: 'Esse acesso é novo ou você já tinha e parou de funcionar?',
+    subtitle: 'Isso ajuda a encaminhar direto para o fluxo certo.',
+    options: [
+      { label: 'É um acesso novo', desc: 'Nunca tive esse acesso e preciso solicitar.', icon: 'key', next: 'acesso_redirect', set: { subcategoria: 'Solicitação de novo acesso' } },
+      { label: 'Já tinha acesso e parou de funcionar', desc: 'Login, senha, bloqueio ou erro em um acesso que eu já usava.', icon: 'key', next: 'diag_acesso_sistema', set: {} },
     ],
   },
   diag_acesso_sistema: {
