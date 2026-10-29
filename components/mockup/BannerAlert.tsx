@@ -21,7 +21,7 @@ export function BannerAlert({
     if (onButtonClick) {
       onButtonClick();
     } else {
-      router.push("/mockup/eventos");
+      router.push("/cipa/eventos");
     }
   };
 

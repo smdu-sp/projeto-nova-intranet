@@ -218,7 +218,7 @@ export async function NavMain() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/mockup">
+            <Link href="/cipa">
               <ShieldCheck className="size-4" />
               <span>CIPA</span>
             </Link>

@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/mockup/header";
 import { BannerAlert } from "@/components/mockup/BannerAlert";
-import { Boxes } from "@/app/mockup/mockBoxes";
+import { Boxes } from "@/app/cipa/mockBoxes";
 import { Button } from "@/components/mockup/Button";
 import { ArrowRight, TriangleAlert, Image as Image, ImageIcon } from "lucide-react";
 import { AccessibilityBar } from "@/components/mockup/accessibility-bar";
@@ -77,7 +77,7 @@ export default function home() {
             <p className="text-sm text-gray-500 max-w-[85ch]">
               Atualizado periodicamente pela CIPA. Arraste uma nova imagem no quadro ao lado para substituir o cartaz atual — os cartazes anteriores ficam guardados na área de Conteúdos.
             </p>
-            <Button className="max-w-52 bg-[#f5f5f7] text-black font-bold p-2" onClick={() => router.push("/mockup/campanhas")} title={"Campanhas Anteriores"} icon={<ArrowRight size={14} />} />
+            <Button className="max-w-52 bg-[#f5f5f7] text-black font-bold p-2" onClick={() => router.push("/cipa/campanhas")} title={"Campanhas Anteriores"} icon={<ArrowRight size={14} />} />
           </section>
         </div>
         <div className="flex flex-col gap-4 rounded-lg py-8 mb-8 px-6">

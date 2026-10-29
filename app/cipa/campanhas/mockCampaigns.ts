@@ -7,8 +7,8 @@ export interface CampaignItem {
   description: string;
   /**
    * Caminho da imagem dentro da pasta `public/`.
-   * Exemplo: adicione o arquivo em `public/mockup/campanhas/outubro-2026.jpg`
-   * e informe `/mockup/campanhas/outubro-2026.jpg` abaixo.
+   * Exemplo: adicione o arquivo em `public/cipa/campanhas/outubro-2026.jpg`
+   * e informe `/cipa/campanhas/outubro-2026.jpg` abaixo.
    */
   imageSrc: string;
 }
@@ -22,7 +22,7 @@ export const mockCampaigns: CampaignItem[] = [
     title: "Outubro Rosa — Cuidado e Prevenção",
     description:
       "Campanha de conscientização sobre a importância do diagnóstico precoce e dos exames preventivos de saúde.",
-    imageSrc: "/mockup/campanhas/cartaz-outubro-2026.jpg",
+    imageSrc: "/cipa/campanhas/cartaz-outubro-2026.jpg",
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ export const mockCampaigns: CampaignItem[] = [
     title: "Setembro Amarelo — Valorização da Vida",
     description:
       "Acolhimento, escuta ativa e divulgação dos canais de apoio à saúde mental para servidores da SMUL.",
-    imageSrc: "/mockup/campanhas/cartaz-setembro-2026.jpg",
+    imageSrc: "/cipa/campanhas/cartaz-setembro-2026.jpg",
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ export const mockCampaigns: CampaignItem[] = [
     title: "Combate ao Assédio Moral e Sexual",
     description:
       "Orientações sobre como identificar situações de assédio no ambiente de trabalho e acionar o canal sigiloso de acolhimento.",
-    imageSrc: "/mockup/campanhas/cartaz-agosto-2026.jpg",
+    imageSrc: "/cipa/campanhas/cartaz-agosto-2026.jpg",
   },
   {
     id: 4,
@@ -52,7 +52,7 @@ export const mockCampaigns: CampaignItem[] = [
     title: "Postura e Pausas Ativas no Dia a Dia",
     description:
       "Dicas práticas de ajuste da estação de trabalho, alongamentos rápidos e prevenção de LER/DORT.",
-    imageSrc: "/mockup/campanhas/cartaz-julho-2026.jpg",
+    imageSrc: "/cipa/campanhas/cartaz-julho-2026.jpg",
   },
   {
     id: 5,
@@ -62,7 +62,7 @@ export const mockCampaigns: CampaignItem[] = [
     title: "Rotas de Fuga e Prevenção de Incêndios",
     description:
       "Boas práticas de segurança predial, sinalização de emergência e cuidados com equipamentos elétricos.",
-    imageSrc: "/mockup/campanhas/cartaz-junho-2026.jpg",
+    imageSrc: "/cipa/campanhas/cartaz-junho-2026.jpg",
   },
   {
     id: 6,
@@ -72,7 +72,7 @@ export const mockCampaigns: CampaignItem[] = [
     title: "Segurança e Saúde no Trabalho",
     description:
       "Mês dedicado à conscientização sobre prevenção de acidentes de trabalho e promoção de um ambiente saudável.",
-    imageSrc: "/mockup/campanhas/cartaz-abril-2026.jpg",
+    imageSrc: "/cipa/campanhas/cartaz-abril-2026.jpg",
   },
 ];
 

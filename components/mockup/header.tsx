@@ -12,13 +12,13 @@ export function Header() {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
-    { label: "Início", href: "/mockup" },
-    { label: "Fale conosco", href: "/mockup/fale-conosco" },
-    { label: "Informações", href: "/mockup/informacoes" },
-    { label: "Campanhas", href: "/mockup/campanhas" },
-    { label: "Vídeos", href: "/mockup/videos" },
-    { label: "Equipe", href: "/mockup/equipe" },
-    { label: "Parcerias", href: "/mockup/parcerias" },
+    { label: "Início", href: "/cipa" },
+    { label: "Fale conosco", href: "/cipa/fale-conosco" },
+    { label: "Informações", href: "/cipa/informacoes" },
+    { label: "Campanhas", href: "/cipa/campanhas" },
+    { label: "Vídeos", href: "/cipa/videos" },
+    { label: "Equipe", href: "/cipa/equipe" },
+    { label: "Parcerias", href: "/cipa/parcerias" },
   ];
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
@@ -43,7 +43,7 @@ export function Header() {
     <div ref={headerRef} className="sticky top-0 z-50 bg-white shadow-sm relative">
       <header className="max-w-[1180px] mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <Image src="/mockup/logo-cipa.svg" alt="Logo CIPA SMUL" width={30} height={30} />
+          <Image src="/cipa/logo-cipa.svg" alt="Logo CIPA SMUL" width={30} height={30} />
           <div>
             <h1 className="text-base font-bold leading-tight">CIPA SMUL</h1>
             <p className="text-[0.45rem] text-gray-600">Prevenção de acidentes e assédio</p>
@@ -54,7 +54,7 @@ export function Header() {
         <nav className="hidden md:block">
           <ul className="flex items-center gap-1.5 lg:gap-3 transition-all duration-300">
             {navItems.map((item) => {
-              const isActive = pathname === item.href || pathname === `${item.href}/` || (item.href !== "/mockup" && pathname?.startsWith(item.href));
+              const isActive = pathname === item.href || pathname === `${item.href}/` || (item.href !== "/cipa" && pathname?.startsWith(item.href));
 
               return (
                 <li key={item.href}>
@@ -91,7 +91,7 @@ export function Header() {
         <div className="overflow-hidden px-6">
           <ul className="flex flex-col gap-2">
             {navItems.map((item) => {
-              const isActive = pathname === item.href || pathname === `${item.href}/` || (item.href !== "/mockup" && pathname?.startsWith(item.href));
+              const isActive = pathname === item.href || pathname === `${item.href}/` || (item.href !== "/cipa" && pathname?.startsWith(item.href));
 
               return (
                 <li key={item.href}>
