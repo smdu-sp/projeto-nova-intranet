@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/lib/auth";
 import { temAcessoTotalModulos } from "@/lib/permissoes";
 import { prisma } from "@/lib/prisma";

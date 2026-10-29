@@ -22,9 +22,13 @@ type CoordenadoriaOption = {
   nome: string;
 };
 
-export default async function UsuariosAdminPage() {
+export default function UsuariosAdminPage() {
   const { data: session } = useSession();
-  const temPermissao = await validarPermissao("usuarios.importar");
+  const [temPermissao, setTemPermissao] = useState(false);
+
+  useEffect(() => {
+    validarPermissao("usuarios.importar").then(setTemPermissao);
+  }, []);
 
   const searchParams = useSearchParams();
 
