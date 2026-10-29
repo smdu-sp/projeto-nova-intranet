@@ -16,6 +16,7 @@ import {
   Network,
   Package,
   Phone,
+  ShieldCheck,
   TicketCheck,
   Users,
   UsersRound,
@@ -214,6 +215,12 @@ export async function NavMain() {
             <Link href="/intranet">
               <UsersRound className="size-4" />
               <span>Intranet</span>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/mockup">
+              <ShieldCheck className="size-4" />
+              <span>CIPA</span>
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>

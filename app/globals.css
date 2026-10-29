@@ -4,6 +4,7 @@
 
 :root {
   --background: rgb(244, 245, 249);
+  --background-secondary: #fbfbfd;
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -75,4 +76,138 @@
     color: var(--foreground);
     min-width: 0;
   }
+}
+
+/* Estilos de Alto Contraste (modulo CIPA) */
+.high-contrast,
+.high-contrast body,
+.high-contrast header,
+.high-contrast nav,
+.high-contrast main,
+.high-contrast section,
+.high-contrast footer,
+.high-contrast div,
+.high-contrast article,
+.high-contrast table,
+.high-contrast tr,
+.high-contrast th,
+.high-contrast td {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+/* Textos gerais em alto contraste */
+.high-contrast p,
+.high-contrast span,
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast li,
+.high-contrast td,
+.high-contrast th,
+.high-contrast label,
+.high-contrast strong {
+  color: #ffffff !important;
+}
+
+/* Estilo do Banner de Alerta em Alto Contraste (Faixa Amarela Vibrante) */
+.high-contrast .banner-alert,
+.high-contrast div.banner-alert {
+  background-color: #ffcc00 !important;
+  color: #000000 !important;
+}
+
+.high-contrast .banner-alert *,
+.high-contrast .banner-alert p,
+.high-contrast .banner-alert span,
+.high-contrast .banner-alert svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* Botão dentro do BannerAlert em Alto Contraste (Pílula Preta com texto amarelo) */
+.high-contrast .banner-alert button {
+  background-color: #000000 !important;
+  color: #ffcc00 !important;
+  border: none !important;
+}
+
+.high-contrast .banner-alert button *,
+.high-contrast .banner-alert button svg {
+  color: #ffcc00 !important;
+  stroke: #ffcc00 !important;
+}
+
+/* Links no Header em Alto Contraste */
+.high-contrast header a {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.high-contrast header a:hover,
+.high-contrast a[class*="hover:bg-gray-100"]:hover {
+  color: #000000 !important;
+}
+
+/* Item ativo da navegação do header em alto contraste (Pílula amarela com texto preto) */
+.high-contrast header a.bg-\[\#1f7a3d\],
+.high-contrast header a[class*="bg-[#1f7a3d]"] {
+  background-color: #ffcc00 !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+/* Barra de acessibilidade em Alto Contraste */
+.high-contrast .accessibility-bar {
+  background-color: #000000 !important;
+}
+
+.high-contrast .accessibility-bar span {
+  color: #ffffff !important;
+}
+
+.high-contrast .accessibility-bar button {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ffffff !important;
+}
+
+.high-contrast .accessibility-bar button *,
+.high-contrast .accessibility-bar button span,
+.high-contrast .accessibility-bar button strong,
+.high-contrast .accessibility-bar button svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* Linha do tempo e Modal de Campanhas em Alto Contraste */
+.high-contrast div.campaign-timeline-line,
+.high-contrast div.campaign-timeline-dot {
+  background-color: #ffcc00 !important;
+}
+
+.high-contrast div.campaign-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.78) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.high-contrast div.campaign-modal-content {
+  background-color: transparent !important;
+}
+
+.high-contrast div.campaign-zoom-overlay {
+  background-color: rgba(0, 0, 0, 0.55) !important;
+}
+
+.high-contrast .campaign-modal-backdrop button {
+  background-color: #ffcc00 !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+}
+
+.high-contrast .campaign-modal-backdrop button svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
 }
