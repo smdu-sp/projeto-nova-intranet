@@ -23,6 +23,10 @@ enum HdSistemaAcessoCodigo {
   slce
   portal_licenciamento
   simproc
+  sissel
+  slcii
+  licenca_sampa
+  suc
 }
 
 enum HdPrioridade {

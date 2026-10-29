@@ -22,7 +22,7 @@ function parseLocal() {
 const prisma = new PrismaClient({ adapter: new PrismaMariaDb(parseLocal()) });
 
 const SISTEMAS: Array<{
-  codigo: "sisacoe" | "sei" | "aprova_digital" | "slce" | "portal_licenciamento" | "simproc";
+  codigo: "sisacoe" | "sei" | "aprova_digital" | "slce" | "portal_licenciamento" | "simproc" | "sissel" | "slcii" | "licenca_sampa" | "suc";
   nome: string;
   permissoes: string[];
 }> = [
@@ -32,6 +32,10 @@ const SISTEMAS: Array<{
   { codigo: "slce", nome: "SLCE", permissoes: ["Consulta", "Operador", "Administrador"] },
   { codigo: "portal_licenciamento", nome: "PORTAL DE LICENCIAMENTO", permissoes: ["Consulta", "Requerente", "Analista", "Administrador"] },
   { codigo: "simproc", nome: "SIMPROC", permissoes: ["Consulta", "Operador", "Administrador"] },
+  { codigo: "sissel", nome: "SISSEL", permissoes: ["Consulta", "Operador", "Administrador"] },
+  { codigo: "slcii", nome: "SLCII", permissoes: ["Consulta", "Operador", "Administrador"] },
+  { codigo: "licenca_sampa", nome: "LICENCIA SAMPA", permissoes: ["Consulta", "Operador", "Administrador"] },
+  { codigo: "suc", nome: "SUC", permissoes: ["Consulta", "Operador", "Administrador"] },
 ];
 
 async function main() {
