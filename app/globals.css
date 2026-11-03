@@ -183,6 +183,13 @@
 }
 
 /* Linha do tempo e Modal de Campanhas em Alto Contraste */
+.high-contrast select,
+.high-contrast select option {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
 .high-contrast div.campaign-timeline-line,
 .high-contrast div.campaign-timeline-dot {
   background-color: #ffcc00 !important;
@@ -193,23 +200,60 @@
   backdrop-filter: blur(12px) !important;
 }
 
-.high-contrast div.campaign-modal-content {
-  background-color: transparent !important;
+.high-contrast div.campaign-popup-box {
+  background-color: #000000 !important;
+  border: 2px solid #ffcc00 !important;
 }
 
 .high-contrast div.campaign-zoom-overlay {
   background-color: rgba(0, 0, 0, 0.55) !important;
 }
 
-.high-contrast .campaign-modal-backdrop button {
+.high-contrast button.campaign-card-btn {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+.high-contrast button.campaign-empty-cta,
+.high-contrast button.campaign-empty-cta span,
+.high-contrast span.campaign-zoom-pill {
+  background-color: #ffcc00 !important;
+  color: #000000 !important;
+}
+
+.high-contrast button.campaign-empty-cta,
+.high-contrast span.campaign-zoom-pill {
+  border: 1px solid #000000 !important;
+}
+
+.high-contrast button.campaign-empty-cta svg,
+.high-contrast span.campaign-zoom-pill svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+.high-contrast img.campaign-ambient-bg {
+  display: none !important;
+}
+
+.high-contrast .campaign-popup-box button:not(.campaign-carousel-dot) {
   background-color: #ffcc00 !important;
   color: #000000 !important;
   border: 1px solid #000000 !important;
 }
 
-.high-contrast .campaign-modal-backdrop button svg {
+.high-contrast .campaign-popup-box button:not(.campaign-carousel-dot) svg {
   color: #000000 !important;
   stroke: #000000 !important;
+}
+
+.high-contrast .campaign-popup-box button.campaign-carousel-dot {
+  background-color: #555555 !important;
+}
+
+.high-contrast .campaign-popup-box button.campaign-carousel-dot[aria-selected="true"] {
+  background-color: #ffcc00 !important;
 }
 
 

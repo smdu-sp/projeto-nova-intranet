@@ -1,78 +1,118 @@
+export interface CampaignSlide {
+  /** Caminho da imagem em `public/` */
+  desktopSrc: string;
+  /** Opcional: arte dedicada para mobile */
+  mobileSrc?: string;
+  caption?: string;
+}
+
 export interface CampaignItem {
-  id: number;
+  id: string;
+  folderName: string;
+  day: number;
+  monthNumber: number;
   month: string;
   year: string;
+  /** Ex.: "09/09/2026" */
+  dateFormatted: string;
+  /** Ex.: "09 de Setembro" */
+  dateLabel: string;
   tag: string;
   title: string;
   description: string;
-  /**
-   * Caminho da imagem dentro da pasta `public/`.
-   * Exemplo: adicione o arquivo em `public/mockup/campanhas/outubro-2026.jpg`
-   * e informe `/mockup/campanhas/outubro-2026.jpg` abaixo.
-   */
-  imageSrc: string;
+  images: CampaignSlide[];
 }
 
-export const mockCampaigns: CampaignItem[] = [
-  {
-    id: 1,
-    month: "Outubro",
-    year: "2026",
-    tag: "Saúde e Prevenção",
-    title: "Outubro Rosa — Cuidado e Prevenção",
+export const CAMPAIGN_MONTHS = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+] as const;
+
+export const CAMPAIGN_YEARS = ["2026", "2025"] as const;
+
+export interface CampaignFolderMeta {
+  tag: string;
+  title: string;
+  description: string;
+  captions?: Record<number, string>;
+}
+
+/**
+ * Metadados descritivos opcionais para cada pasta de data em `public/mockup/campanhas/<dia>-<mes>-<ano>`.
+ * Se uma nova pasta de data for adicionada sem entrada aqui, ela ainda será exibida automaticamente
+ * usando a data da pasta e a ordem numérica dos arquivos.
+ */
+export const CAMPAIGN_FOLDER_METADATA: Record<string, CampaignFolderMeta> = {
+  "9-9-2026": {
+    tag: "Prevenção de Acidentes",
+    title: "Prevenção de Quedas e Acidentes em Ambientes de Escritório",
     description:
-      "Campanha de conscientização sobre a importância do diagnóstico precoce e dos exames preventivos de saúde.",
-    imageSrc: "/mockup/campanhas/cartaz-outubro-2026.jpg",
+      "Orientações sobre fatores ambientais, físicos, humanos e organizacionais para evitar quedas, tropeços e escorregões no dia a dia.",
+    captions: {
+      1: "Cartaz 1 — Causas de acidentes de trabalho em ambientes de escritório",
+      2: "Cartaz 2 — Fatores ambientais e físicos: fios e cabos expostos",
+      3: "Cartaz 3 — Fatores ambientais e físicos: pisos molhados ou escorregadios",
+      4: "Cartaz 4 — Fatores ambientais e físicos: obstáculos nos locais de passagem",
+      5: "Cartaz 5 — Fatores humanos e organizacionais: atenção em desníveis e degraus",
+      6: "Cartaz 6 — Fatores humanos e organizacionais: uso adequado de escadas em vez de cadeiras",
+      7: "Cartaz 7 — Contato da CIPA SMUL: juntos construindo ambientes mais seguros",
+    },
   },
+  "30-9-2026": {
+    tag: "Segurança Elétrica",
+    title: "Segurança Elétrica — Prevenção de Riscos Elétricos",
+    description:
+      "Cuidados essenciais ao desligar equipamentos, manusear tomadas pelo plug, evitar sobrecarga em extensões e respeitar pontos exclusivos de ventiladores.",
+    captions: {
+      1: "Cartaz 1 — Desligar equipamentos não utilizados e retirar da tomada sempre pelo plug",
+      2: "Cartaz 2 — Cuidados com mãos molhadas, sobrecarga de extensões e tomadas de ventiladores",
+    },
+  },
+};
+
+export const fallbackCampaigns: CampaignItem[] = [
   {
-    id: 2,
+    id: "9-9-2026",
+    folderName: "9-9-2026",
+    day: 9,
+    monthNumber: 9,
     month: "Setembro",
     year: "2026",
-    tag: "Saúde Mental",
-    title: "Setembro Amarelo — Valorização da Vida",
-    description:
-      "Acolhimento, escuta ativa e divulgação dos canais de apoio à saúde mental para servidores da SMUL.",
-    imageSrc: "/mockup/campanhas/cartaz-setembro-2026.jpg",
+    dateFormatted: "09/09/2026",
+    dateLabel: "09 de Setembro",
+    tag: CAMPAIGN_FOLDER_METADATA["9-9-2026"].tag,
+    title: CAMPAIGN_FOLDER_METADATA["9-9-2026"].title,
+    description: CAMPAIGN_FOLDER_METADATA["9-9-2026"].description,
+    images: [1, 2, 3, 4, 5, 6, 7].map((num) => ({
+      desktopSrc: `/mockup/campanhas/9-9-2026/${num}.jpg`,
+      caption: CAMPAIGN_FOLDER_METADATA["9-9-2026"].captions?.[num],
+    })),
   },
   {
-    id: 3,
-    month: "Agosto",
+    id: "30-9-2026",
+    folderName: "30-9-2026",
+    day: 30,
+    monthNumber: 9,
+    month: "Setembro",
     year: "2026",
-    tag: "Respeito no Trabalho",
-    title: "Combate ao Assédio Moral e Sexual",
-    description:
-      "Orientações sobre como identificar situações de assédio no ambiente de trabalho e acionar o canal sigiloso de acolhimento.",
-    imageSrc: "/mockup/campanhas/cartaz-agosto-2026.jpg",
-  },
-  {
-    id: 4,
-    month: "Julho",
-    year: "2026",
-    tag: "Ergonomia",
-    title: "Postura e Pausas Ativas no Dia a Dia",
-    description:
-      "Dicas práticas de ajuste da estação de trabalho, alongamentos rápidos e prevenção de LER/DORT.",
-    imageSrc: "/mockup/campanhas/cartaz-julho-2026.jpg",
-  },
-  {
-    id: 5,
-    month: "Junho",
-    year: "2026",
-    tag: "Segurança",
-    title: "Rotas de Fuga e Prevenção de Incêndios",
-    description:
-      "Boas práticas de segurança predial, sinalização de emergência e cuidados com equipamentos elétricos.",
-    imageSrc: "/mockup/campanhas/cartaz-junho-2026.jpg",
-  },
-  {
-    id: 6,
-    month: "Abril",
-    year: "2026",
-    tag: "Abril Verde",
-    title: "Segurança e Saúde no Trabalho",
-    description:
-      "Mês dedicado à conscientização sobre prevenção de acidentes de trabalho e promoção de um ambiente saudável.",
-    imageSrc: "/mockup/campanhas/cartaz-abril-2026.jpg",
+    dateFormatted: "30/09/2026",
+    dateLabel: "30 de Setembro",
+    tag: CAMPAIGN_FOLDER_METADATA["30-9-2026"].tag,
+    title: CAMPAIGN_FOLDER_METADATA["30-9-2026"].title,
+    description: CAMPAIGN_FOLDER_METADATA["30-9-2026"].description,
+    images: [1, 2].map((num) => ({
+      desktopSrc: `/mockup/campanhas/30-9-2026/${num}.png`,
+      caption: CAMPAIGN_FOLDER_METADATA["30-9-2026"].captions?.[num],
+    })),
   },
 ];
-

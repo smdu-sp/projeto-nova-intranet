@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/mockup/header";
 import { Footer } from "@/components/mockup/footer";
 import { AccessibilityBar } from "@/components/mockup/accessibility-bar";
-import { BannerAlert } from "@/components/mockup/banneralert";
+import { BannerAlert } from "@/components/mockup/BannerAlert";
 
 export const metadata: Metadata = {
   title: "Campanhas Anteriores — CIPA SMUL",
