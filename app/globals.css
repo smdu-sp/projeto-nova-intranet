@@ -184,10 +184,31 @@
 
 /* Linha do tempo e Modal de Campanhas em Alto Contraste */
 .high-contrast select,
-.high-contrast select option {
+.high-contrast select option,
+.high-contrast input {
   background-color: #000000 !important;
   color: #ffffff !important;
   border-color: #ffffff !important;
+}
+
+.high-contrast main a,
+.high-contrast footer a {
+  color: #ffcc00 !important;
+}
+
+.high-contrast .accessibility-bar button[aria-pressed="true"],
+.high-contrast main button[aria-selected="true"],
+.high-contrast main button[aria-expanded="true"] {
+  background-color: #ffcc00 !important;
+  color: #000000 !important;
+  border-color: #ffcc00 !important;
+}
+
+.high-contrast .accessibility-bar button[aria-pressed="true"] *,
+.high-contrast main button[aria-selected="true"] *,
+.high-contrast main button[aria-expanded="true"] * {
+  color: #000000 !important;
+  stroke: #000000 !important;
 }
 
 .high-contrast div.campaign-timeline-line,

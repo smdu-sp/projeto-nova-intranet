@@ -4,7 +4,17 @@ export interface PersonProps {
   unit?: string;
   role?: string;
   department?: string;
+  photoUrl?: string;
 }
+
+export const WORK_GROUPS = [
+  "Todos",
+  "Diretoria",
+  "SIPAT",
+  "Comunicação",
+  "Saúde",
+  "Vistorias",
+] as const;
 
 export const mockPeople: PersonProps[] = [
   {
@@ -25,7 +35,7 @@ export const mockPeople: PersonProps[] = [
     id: 3,
     name: "Analice Barbosa dos Santos",
     unit: "CASE",
-    role: "—",
+    role: "1ª Secretária",
     department: "Comunicação",
   },
   {

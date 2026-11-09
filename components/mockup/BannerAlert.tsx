@@ -21,18 +21,18 @@ export function BannerAlert({
     if (onButtonClick) {
       onButtonClick();
     } else {
-      router.push("/mockup/eventos");
+      router.push("/mockup/fale-conosco#acolhimento");
     }
   };
 
   return (
     <div className="banner-alert flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-center bg-[#1f7a3d] px-4 py-2.5 sm:py-2 text-center">
       <span className="flex items-center justify-center gap-2 text-xs text-white font-bold">
-        <TriangleAlert className="w-4 h-4 shrink-0 text-white" />
+        <TriangleAlert className="w-4 h-4 shrink-0 text-white" aria-hidden="true" />
         <span>{message}</span>
       </span>
       <Button
-        className="text-xs sm:text-sm font-bold bg-[#ffffff] text-[#1f7a3d] shrink-0"
+        className="text-xs sm:text-sm font-bold bg-[#ffffff] text-[#1f7a3d] hover:bg-gray-100 shrink-0 px-3 py-1"
         onClick={handleClick}
         title={buttonTitle}
         icon={<ArrowRight className="w-3.5 h-3.5 shrink-0" />}
