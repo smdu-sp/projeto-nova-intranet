@@ -14,7 +14,7 @@ export const FastAcess: FastAcessProps[] = [
     title: "Quer falar com a gente ?",
     subtitle: "E-mails, caixas de recado e canal de acolihmento",
     icon: <MessageCircle className="text-gray-500" size={16} />,
-    url: "/mockup/eventos",
+    url: "/mockup/fale-conosco",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ export const FastAcess: FastAcessProps[] = [
     title: "Conheça os nossos integrantes",
     subtitle: "Gestõ, grupos de trabalho e contatos",
     icon: <UsersRound className="text-gray-500" size={16} />,
-    url: "/mockup/integrantes",
+    url: "/mockup/equipe",
   },
   {
     id: 5,
