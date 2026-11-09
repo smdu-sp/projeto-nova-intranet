@@ -89,12 +89,15 @@
 .high-contrast div,
 .high-contrast article,
 .high-contrast table,
+.high-contrast thead,
+.high-contrast tbody,
 .high-contrast tr,
 .high-contrast th,
 .high-contrast td {
   background-color: #000000 !important;
+  background-image: none !important;
   color: #ffffff !important;
-  border-color: #333333 !important;
+  border-color: #555555 !important;
 }
 
 /* Textos gerais em alto contraste */
@@ -110,6 +113,44 @@
 .high-contrast label,
 .high-contrast strong {
   color: #ffffff !important;
+}
+
+/* Ícones SVG no conteúdo principal e rodapé em alto contraste */
+.high-contrast main svg,
+.high-contrast footer svg {
+  color: #ffcc00 !important;
+  stroke: #ffcc00 !important;
+}
+
+/* Badges e pílulas (spans com background utilitário) em alto contraste */
+.high-contrast main span[class*="bg-"]:not(.campaign-zoom-pill) {
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffcc00 !important;
+  border: 1px solid #ffcc00 !important;
+}
+
+.high-contrast main span[class*="bg-"]:not(.campaign-zoom-pill) svg {
+  color: #ffcc00 !important;
+  stroke: #ffcc00 !important;
+}
+
+/* Círculos de ícone/avatar em alto contraste */
+.high-contrast main div[class*="rounded-full"]:not(.campaign-timeline-dot) {
+  border: 1px solid #ffcc00 !important;
+  color: #ffcc00 !important;
+}
+
+/* Botões padrão dentro do main em alto contraste */
+.high-contrast main button {
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+.high-contrast main button:hover {
+  border-color: #ffcc00 !important;
 }
 
 /* Estilo do Banner de Alerta em Alto Contraste (Faixa Amarela Vibrante) */
@@ -182,7 +223,7 @@
   stroke: #000000 !important;
 }
 
-/* Linha do tempo e Modal de Campanhas em Alto Contraste */
+/* Campos de formulário, Links e Estados Selecionados em Alto Contraste */
 .high-contrast select,
 .high-contrast select option,
 .high-contrast input {
@@ -191,15 +232,34 @@
   border-color: #ffffff !important;
 }
 
+.high-contrast input::placeholder {
+  color: #cccccc !important;
+}
+
 .high-contrast main a,
 .high-contrast footer a {
   color: #ffcc00 !important;
+}
+
+.high-contrast main a[class*="bg-"] {
+  background-color: #ffcc00 !important;
+  background-image: none !important;
+  color: #000000 !important;
+  border: 1px solid #ffcc00 !important;
+}
+
+.high-contrast main a[class*="bg-"] *,
+.high-contrast main a[class*="bg-"] svg {
+  background-color: transparent !important;
+  color: #000000 !important;
+  stroke: #000000 !important;
 }
 
 .high-contrast .accessibility-bar button[aria-pressed="true"],
 .high-contrast main button[aria-selected="true"],
 .high-contrast main button[aria-expanded="true"] {
   background-color: #ffcc00 !important;
+  background-image: none !important;
   color: #000000 !important;
   border-color: #ffcc00 !important;
 }
@@ -207,10 +267,14 @@
 .high-contrast .accessibility-bar button[aria-pressed="true"] *,
 .high-contrast main button[aria-selected="true"] *,
 .high-contrast main button[aria-expanded="true"] * {
+  background-color: transparent !important;
+  background-image: none !important;
   color: #000000 !important;
   stroke: #000000 !important;
+  border-color: #000000 !important;
 }
 
+/* Linha do tempo e Modal de Campanhas em Alto Contraste */
 .high-contrast div.campaign-timeline-line,
 .high-contrast div.campaign-timeline-dot {
   background-color: #ffcc00 !important;
@@ -264,7 +328,9 @@
   border: 1px solid #000000 !important;
 }
 
+.high-contrast .campaign-popup-box button:not(.campaign-carousel-dot) *,
 .high-contrast .campaign-popup-box button:not(.campaign-carousel-dot) svg {
+  background-color: transparent !important;
   color: #000000 !important;
   stroke: #000000 !important;
 }
@@ -276,7 +342,3 @@
 .high-contrast .campaign-popup-box button.campaign-carousel-dot[aria-selected="true"] {
   background-color: #ffcc00 !important;
 }
-
-
-
-

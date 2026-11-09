@@ -43,10 +43,10 @@ export default function FaleConoscoPage() {
             return (
               <article
                 key={id}
-                className={`flex flex-1 flex-col justify-between gap-4 rounded-2xl p-6 transition-all ${
+                className={`flex flex-1 flex-col justify-between gap-4 rounded-2xl p-6 border transition-all ${
                   isHighlight
-                    ? "bg-[#1f7a3d] text-white shadow-md"
-                    : "bg-white text-gray-900 border border-gray-200 shadow-sm"
+                    ? "bg-[#1f7a3d] text-white border-[#1f7a3d] shadow-md"
+                    : "bg-white text-gray-900 border-gray-200 shadow-sm"
                 }`}
               >
                 <div className="flex flex-col gap-3">
