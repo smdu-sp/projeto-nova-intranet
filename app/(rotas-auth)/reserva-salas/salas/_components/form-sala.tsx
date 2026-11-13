@@ -556,9 +556,9 @@ export default function FormSala({
                           )
                         }
                       >
-                        <option value="">Selecione</option>
-                        <option value="FIXO">Fixo</option>
-                        <option value="MOVEL">Móvel</option>
+                        <option className="bg-background text-foreground dark:bg-zinc-900 dark:text-white" value="">Selecione</option>
+                        <option className="bg-background text-foreground dark:bg-zinc-900 dark:text-white" value="FIXO">Fixo</option>
+                        <option className="bg-background text-foreground dark:bg-zinc-900 dark:text-white" value="MOVEL">Móvel</option>
                       </select>
                     </FormControl>
                     <FormMessage />

@@ -49,19 +49,38 @@ export default function ModalAlterarStatusItem({
 			return;
 		}
 
-		const res = await fetch(`/api/helpdesk/itens/${idbem}/status`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				statusitem: statusDestino,
-				motivo: motivo.trim(),
-			}),
-		});
-		const data = await res.json();
-		if (!res.ok) {
-			toast.error('Erro ao alterar status', { description: data.error });
+		try {
+			const res = await fetch(`/api/helpdesk/itens/${idbem}/status`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					statusitem: statusDestino,
+					motivo: motivo.trim(),
+				}),
+			});
+			if (!res.ok) {
+				let message = `Falha ao alterar status (HTTP ${res.status})`;
+				try {
+					const data: unknown = await res.json();
+					if (
+						typeof data === 'object' &&
+						data !== null &&
+						'error' in data &&
+						typeof data.error === 'string'
+					) {
+						message = data.error;
+					}
+				} catch {
+					// Mantém a mensagem com o código HTTP quando a resposta não for JSON.
+				}
+				toast.error('Erro ao alterar status', { description: message });
+				return;
+			}
+		} catch {
+			toast.error('Falha na comunicação com o servidor ao alterar status');
 			return;
 		}
+
 		toast.success(
 			`Status alterado para "${statusDestino}" e item movimentado para a ATIC`,
 		);

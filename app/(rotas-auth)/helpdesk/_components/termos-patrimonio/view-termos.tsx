@@ -13,12 +13,12 @@ const CARD: React.CSSProperties = {
 };
 
 const INPUT: React.CSSProperties = {
-  border: "1px solid #E8EBF1",
+  border: "1px solid var(--helpdesk-input-border)",
   borderRadius: 10,
   padding: "8px 12px",
   fontSize: 14,
   color: "#1B2336",
-  background: "#fff",
+  background: "var(--helpdesk-input-background)",
   outline: "none",
   width: "100%",
 };

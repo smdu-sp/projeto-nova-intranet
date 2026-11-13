@@ -127,18 +127,18 @@ async function uploadAnexosChamado(
 // ─── Helpers & shared styles ────────────────────────────────────────────────
 
 const CARD_STYLE: React.CSSProperties = {
-  background: '#fff',
-  border: '1px solid #E8EBF1',
+  background: 'var(--helpdesk-surface)',
+  border: '1px solid var(--helpdesk-border)',
   borderRadius: 14,
   boxShadow: '0 1px 3px rgba(20,30,55,0.04)',
   padding: 20,
 };
 
 const TABLE_TH: React.CSSProperties = {
-  background: '#FAFBFD',
+  background: 'var(--helpdesk-surface-muted)',
   fontSize: 11,
   fontWeight: 700,
-  color: '#7A8499',
+  color: 'var(--helpdesk-text-muted)',
   textTransform: 'uppercase',
   letterSpacing: '0.06em',
   padding: '10px 14px',
@@ -146,7 +146,7 @@ const TABLE_TH: React.CSSProperties = {
 };
 
 const BTN_PRIMARY: React.CSSProperties = {
-  background: '#0A328D',
+  background: 'var(--helpdesk-primary)',
   color: '#fff',
   border: 'none',
   borderRadius: 10,
@@ -161,8 +161,8 @@ const BTN_PRIMARY: React.CSSProperties = {
 
 const BTN_GHOST: React.CSSProperties = {
   background: 'transparent',
-  color: '#4A5468',
-  border: '1px solid #E8EBF1',
+  color: 'var(--helpdesk-text-subtle)',
+  border: '1px solid var(--helpdesk-border)',
   borderRadius: 10,
   padding: '8px 16px',
   fontWeight: 500,
@@ -174,12 +174,12 @@ const BTN_GHOST: React.CSSProperties = {
 };
 
 const INPUT_STYLE: React.CSSProperties = {
-  border: '1px solid #E8EBF1',
+  border: '1px solid var(--helpdesk-input-border)',
   borderRadius: 10,
   padding: '8px 12px',
   fontSize: 14,
-  color: '#1B2336',
-  background: '#fff',
+  color: 'var(--helpdesk-text)',
+  background: 'var(--helpdesk-input-background)',
   outline: 'none',
   width: '100%',
 };
@@ -189,7 +189,7 @@ const LABEL: React.CSSProperties = { fontSize: 13, fontWeight: 600, display: 'bl
 function StatusBadge({ status }: { status: StatusChamado }) {
   const m = STATUS_META[status];
   return (
-    <span style={{
+    <span className="helpdesk-status-badge" data-status={status} style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,
       background: m.corBg, color: m.corText,
       borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 600,
@@ -233,18 +233,18 @@ function UsuarioInfoLinha({
 }) {
   const iconPaths: Record<typeof tipo, ReactNode> = {
     email: (
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2">
+      <svg className="helpdesk-user-info-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2">
         <rect x="2" y="4" width="20" height="16" rx="2" />
         <path d="m2 7 10 7 10-7" />
       </svg>
     ),
     telefone: (
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2">
+      <svg className="helpdesk-user-info-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
       </svg>
     ),
     unidade: (
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2">
+      <svg className="helpdesk-user-info-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2">
         <path d="M3 21h18" />
         <path d="M5 21V7l8-4v18" />
         <path d="M19 21V11l-6-3" />
@@ -253,12 +253,12 @@ function UsuarioInfoLinha({
   };
 
   const conteudo = href ? (
-    <a href={href} style={{ fontSize: 12, color: '#0A328D', textDecoration: 'none', wordBreak: 'break-all' }}
+    <a href={href} className="helpdesk-user-info-text" style={{ fontSize: 12, color: '#0A328D', textDecoration: 'none', wordBreak: 'break-all' }}
       onClick={e => e.stopPropagation()}>
       {texto}
     </a>
   ) : (
-    <span style={{ fontSize: 12, color: '#0A328D', wordBreak: 'break-word' }}>{texto}</span>
+    <span className="helpdesk-user-info-text" style={{ fontSize: 12, color: '#0A328D', wordBreak: 'break-word' }}>{texto}</span>
   );
 
   return (
@@ -292,6 +292,7 @@ function UsuarioInfoPopover({ usuario, unidade }: { usuario: Usuario; unidade?: 
         <button
           type="button"
           aria-label={`Informações de ${usuario.nome}`}
+          className="helpdesk-user-info-trigger"
           style={{
             width: 16, height: 16, padding: 0, border: 'none', background: 'transparent',
             color: '#0A328D', fontSize: 13, fontWeight: 700, fontStyle: 'italic',
@@ -558,7 +559,7 @@ function CampoAtores({
           <span style={{ fontSize: 12, color: '#7A8499' }}>—</span>
         )}
         {podeAdicionar && !adicionando && (
-          <button type="button" onClick={() => setAdicionando(true)} title={`Adicionar ${label.toLowerCase()}`}
+          <button type="button" className="helpdesk-actor-add-button" onClick={() => setAdicionando(true)} title={`Adicionar ${label.toLowerCase()}`}
             style={{
               width: 28, height: 28, border: '1px dashed #C5CDDB', borderRadius: 6,
               background: 'transparent', color: '#0A328D', cursor: 'pointer',
@@ -779,6 +780,7 @@ function SecaoAtoresChamado({
             headerExtra={editavel && usuarioLogadoId ? (
               <button
                 type="button"
+                className="helpdesk-assign-to-me-button"
                 onClick={atribuirAMim}
                 disabled={salvando || jaAtribuidoAMim}
                 title={jaAtribuidoAMim ? 'Você já está atribuído a este chamado' : 'Atribuir este chamado a você'}
@@ -823,8 +825,8 @@ function DonutChart({ segments, total, size = 140 }: { segments: { nome: string;
             transform={`rotate(-90 ${size / 2} ${size / 2})`} />
         );
       })}
-      <text x="50%" y="46%" textAnchor="middle" fontSize="22" fontWeight="700" fill="#1B2336" fontFamily="Inter, sans-serif">{total}</text>
-      <text x="50%" y="62%" textAnchor="middle" fontSize="11" fill="#7A8499" fontFamily="Inter, sans-serif">itens</text>
+      <text className="helpdesk-report-donut-total" x="50%" y="46%" textAnchor="middle" fontSize="22" fontWeight="700" fill="#1B2336" fontFamily="Inter, sans-serif">{total}</text>
+      <text className="helpdesk-report-donut-label" x="50%" y="62%" textAnchor="middle" fontSize="11" fill="#7A8499" fontFamily="Inter, sans-serif">itens</text>
     </svg>
   );
 }
@@ -906,19 +908,19 @@ export function HdApp({ initialView = 'dashboard', initialId, initialArea, initi
   };
 
   if (loading) return (
-    <div style={{ minHeight: '100%', background: '#F4F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif', color: '#7A8499', fontSize: 15 }}>
+    <div className="helpdesk-app" style={{ minHeight: '100%', background: '#F4F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif', color: '#7A8499', fontSize: 15 }}>
       Carregando chamados...
     </div>
   );
 
   if (erroApi) return (
-    <div style={{ minHeight: '100%', background: '#F4F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif', color: '#C0392B', fontSize: 15 }}>
+    <div className="helpdesk-app" style={{ minHeight: '100%', background: '#F4F5F9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif', color: '#C0392B', fontSize: 15 }}>
       Erro ao carregar dados: {erroApi}
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100%', background: '#F4F5F9', fontFamily: 'Inter, system-ui, sans-serif', color: '#1B2336' }}>
+    <div className="helpdesk-app" style={{ minHeight: '100%', background: '#F4F5F9', fontFamily: 'Inter, system-ui, sans-serif', color: '#1B2336' }}>
       {view === 'dashboard' && <ViewDashboard {...viewProps} />}
       {view === 'chamados' && <ViewChamados {...viewProps} />}
       {view === 'chamado-detalhe' && <ViewChamadoDetalhe {...viewProps} />}
@@ -976,10 +978,10 @@ function StatusItemBadge({ status }: { status: string }) {
   );
 }
 
-function AreaBadge({ area }: { area: TipoChamado }) {
+function AreaBadge({ area, darkThemeAccent = false }: { area: TipoChamado; darkThemeAccent?: boolean }) {
   const meta = TIPO_CHAMADO_META[area];
   return (
-    <span style={{
+    <span className={darkThemeAccent ? 'helpdesk-area-badge-dark-theme' : undefined} style={{
       fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '3px 10px',
       background: meta.corBg, color: meta.corText,
       border: '1px solid transparent',
@@ -1062,7 +1064,7 @@ function ViewDashboard({ navTo, chamados, transferencias, usuarioPorId, capacida
                   onClick={() => navTo('chamado-detalhe', c.id)}
                   onMouseEnter={e => (e.currentTarget.style.background = '#FAFBFD')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                  <td style={{ padding: '10px 14px', fontSize: 13, color: '#0A328D', fontWeight: 700 }}>#{c.id}</td>
+                  <td style={{ padding: '10px 14px', fontSize: 13, color: 'var(--helpdesk-primary)', fontWeight: 700 }}>#{c.id}</td>
                   <td style={{ padding: '10px 14px', fontSize: 13, maxWidth: 200 }}>
                     <div style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 200 }}>{c.titulo}</div>
                     <div style={{ fontSize: 11, color: '#7A8499' }}>{c.unidade}</div>
@@ -1107,7 +1109,7 @@ function ViewDashboard({ navTo, chamados, transferencias, usuarioPorId, capacida
             return (
               <div key={t.id} style={{ ...CARD_STYLE, padding: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#0A328D' }}>{t.cimbpm}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--helpdesk-primary)' }}>{t.cimbpm}</span>
                   <span style={{ fontSize: 11, color: '#7A8499' }}>{fmtDataCurta(t.dataTransferencia)}</span>
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{t.unidadeDestino}</div>
@@ -1269,12 +1271,12 @@ function ViewChamados({ navTo, chamados, usuarioPorId, perfilLogado, areaFiltro 
               style={{
                 border: 'none', background: 'none', cursor: 'pointer', padding: '8px 14px', fontSize: 13,
                 fontWeight: tabAtiva === t.key ? 700 : 500,
-                color: tabAtiva === t.key ? '#0A328D' : '#7A8499',
-                borderBottom: tabAtiva === t.key ? '2px solid #0A328D' : '2px solid transparent',
+                color: tabAtiva === t.key ? 'var(--helpdesk-primary)' : '#7A8499',
+                borderBottom: tabAtiva === t.key ? '2px solid var(--helpdesk-primary)' : '2px solid transparent',
                 marginBottom: -1,
               }}>
               {t.label}
-              <span style={{ marginLeft: 5, fontSize: 11, background: tabAtiva === t.key ? '#D9E1F4' : '#F2F4F8', color: tabAtiva === t.key ? '#0A328D' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
+              <span style={{ marginLeft: 5, fontSize: 11, background: tabAtiva === t.key ? 'var(--helpdesk-primary-soft)' : '#F2F4F8', color: tabAtiva === t.key ? 'var(--helpdesk-primary)' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
                 {countTab(t.key)}
               </span>
             </button>
@@ -1334,7 +1336,7 @@ function ViewChamados({ navTo, chamados, usuarioPorId, perfilLogado, areaFiltro 
                   onClick={() => navTo('chamado-detalhe', c.id)}
                   onMouseEnter={e => (e.currentTarget.style.background = '#FAFBFD')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                  <td style={{ padding: '10px 14px', fontSize: 13, color: '#0A328D', fontWeight: 700 }}>#{c.id}</td>
+                  <td style={{ padding: '10px 14px', fontSize: 13, color: 'var(--helpdesk-primary)', fontWeight: 700 }}>#{c.id}</td>
                   <td style={{ padding: '10px 14px', maxWidth: 220 }}>
                     <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 220 }}>{c.titulo}</div>
                     <div style={{ fontSize: 11, color: '#7A8499' }}>{c.unidade}</div>
@@ -1801,6 +1803,8 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                 <button
                   key={tab.key}
                   type="button"
+                  className="helpdesk-chat-tab"
+                  data-active={abaDetalhe === tab.key}
                   onClick={() => setAbaDetalhe(tab.key)}
                   style={{
                     border: 'none', background: 'none', cursor: 'pointer', padding: '8px 14px', fontSize: 13,
@@ -1811,7 +1815,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                   }}
                 >
                   {tab.label}
-                  <span style={{
+                  <span className="helpdesk-chat-tab-count" style={{
                     marginLeft: 5, fontSize: 11,
                     background: abaDetalhe === tab.key ? '#D9E1F4' : '#F2F4F8',
                     color: abaDetalhe === tab.key ? '#0A328D' : '#7A8499',
@@ -1878,7 +1882,10 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                           <span style={{ fontSize: 10, background: '#FEF3CD', color: '#7A5700', padding: '1px 6px', borderRadius: 10, fontWeight: 600 }}>nota interna</span>
                         )}
                       </div>
-                      <div style={{
+                      <div
+                        className="helpdesk-chat-message"
+                        data-message-kind={isSolucao ? 'solution' : isProdam ? 'prodam' : isInterna ? 'internal' : bolhaAzulTecnico ? 'technician' : 'requester'}
+                        style={{
                         background: isSolucao ? GLPI_SOLUCAO.bg : isProdam ? prodamMeta.corBg : isInterna ? '#FFFBEC' : bolhaAzulTecnico ? '#0A328D' : isMensagemInicialSolicitante ? '#e2f2e3' : '#fff',
                         color: isSolucao ? GLPI_SOLUCAO.fg : isProdam ? prodamMeta.corText : isInterna ? '#5C4000' : bolhaAzulTecnico ? '#fff' : '#1B2336',
                         border: isSolucao ? `1px solid ${GLPI_SOLUCAO.border}` : isProdam ? `1px solid #DCC7EE` : isInterna ? '1px dashed #F5D76E' : bolhaAzulTecnico ? 'none' : isMensagemInicialSolicitante ? '1px solid #e2f2e3' : '1px solid #E8EBF1',
@@ -1973,6 +1980,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                       Descreva o que foi feito. Ao confirmar, o chamado será marcado como <strong>Resolvido</strong>.
                     </p>
                     <textarea
+                      className="helpdesk-light-background-textarea"
                       value={textoAcao}
                       onChange={e => setTextoAcao(e.target.value)}
                       placeholder="Descreva a solução aplicada..."
@@ -2021,6 +2029,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                       </select>
                     </label>
                     <textarea
+                      className="helpdesk-light-background-textarea"
                       value={textoAcao}
                       onChange={e => setTextoAcao(e.target.value)}
                       placeholder="Descreva o motivo do encaminhamento..."
@@ -2055,6 +2064,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                       Use quando houver dependência de intervenção da PRODAM. Descreva o motivo do envio. O tempo de espera será contado automaticamente.
                     </p>
                     <textarea
+                      className="helpdesk-light-background-textarea"
                       value={textoAcao}
                       onChange={e => setTextoAcao(e.target.value)}
                       placeholder="Descreva o motivo do envio para a PRODAM..."
@@ -2127,7 +2137,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                   </div>
 
                   {menuAcaoAberto && (
-                    <div style={{
+                    <div className="helpdesk-chat-action-menu" style={{
                       position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, minWidth: 220, zIndex: 20,
                       background: '#fff', border: '1px solid #E8EBF1', borderRadius: 8,
                       boxShadow: '0 4px 16px rgba(20,30,55,0.12)', overflow: 'hidden',
@@ -2135,6 +2145,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                       {!isClosed && chamado.status !== 'resolvido' && (
                         <button
                           type="button"
+                          className="helpdesk-chat-action-option"
                           onClick={() => {
                             setMenuAcaoAberto(false);
                             setModoAcao('encaminhar');
@@ -2147,7 +2158,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                             background: '#EEF2F7', color: '#1B2336', fontSize: 13, fontWeight: 600,
                           }}
                         >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5468" strokeWidth="2.5">
+                          <svg className="helpdesk-chat-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5468" strokeWidth="2.5">
                             <path d="m17 2 4 4-4 4" /><path d="M3 11v-1a4 4 0 0 1 4-4h14" />
                             <path d="m7 22-4-4 4-4" /><path d="M21 13v1a4 4 0 0 1-4 4H3" />
                           </svg>
@@ -2157,6 +2168,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                       {chamado.status !== 'prodam' && (
                         <button
                           type="button"
+                          className="helpdesk-chat-action-option"
                           onClick={() => {
                             setMenuAcaoAberto(false);
                             setModoAcao('prodam');
@@ -2168,7 +2180,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                             background: '#EEE2F7', color: '#1B2336', fontSize: 13, fontWeight: 600,
                           }}
                         >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B3E91" strokeWidth="2.5">
+                          <svg className="helpdesk-chat-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B3E91" strokeWidth="2.5">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                           </svg>
                           Enviar para PRODAM
@@ -2176,6 +2188,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                       )}
                       <button
                         type="button"
+                        className="helpdesk-chat-action-option"
                         onClick={() => {
                           setMenuAcaoAberto(false);
                           setModoAcao('solucao');
@@ -2187,7 +2200,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
                           background: '#D9E8F7', color: '#1B2336', fontSize: 13, fontWeight: 600,
                         }}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A328D" strokeWidth="2.5">
+                        <svg className="helpdesk-chat-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A328D" strokeWidth="2.5">
                           <path d="M20 6 9 17l-5-5" />
                         </svg>
                         Adicionar uma solução
@@ -2271,6 +2284,7 @@ function ViewChamadoDetalhe({ navTo, chamados, setChamados, activeId, usuarioPor
 
                 <div style={{ display: 'flex', gap: 8 }}>
                   <textarea
+                    className={tipoMensagem === 'interna' ? 'helpdesk-light-background-textarea' : undefined}
                     value={mensagem}
                     onChange={e => setMensagem(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && e.ctrlKey) enviarMensagem(); }}
@@ -2640,7 +2654,7 @@ function ViewNovoChamado({
           <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Novo Chamado</h1>
           <p style={{ fontSize: 13, color: '#7A8499', margin: '4px 0 0' }}>{areaMeta.descricao}</p>
         </div>
-        <AreaBadge area={tipoArea} />
+        <AreaBadge area={tipoArea} darkThemeAccent />
       </div>
 
       {errors.length > 0 && (
@@ -2662,7 +2676,7 @@ function ViewNovoChamado({
                 { v: false, label: 'Para mim' },
                 { v: true, label: 'Para outra pessoa' },
               ].map(opt => (
-                <button key={String(opt.v)} type="button" onClick={() => { setParaOutraPessoa(opt.v); setSolicitanteSelecionado(null); }}
+                <button key={String(opt.v)} type="button" className="helpdesk-person-toggle" data-selected={paraOutraPessoa === opt.v} onClick={() => { setParaOutraPessoa(opt.v); setSolicitanteSelecionado(null); }}
                   style={{
                     padding: '7px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600,
                     border: `2px solid ${paraOutraPessoa === opt.v ? '#0A328D' : '#E8EBF1'}`,
@@ -2923,18 +2937,18 @@ function InventarioItemDetalheExpandido({ item }: { item: ItemPatrimonio }) {
   ];
 
   return (
-    <div style={{
+    <div className="helpdesk-table-expanded-content" style={{
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
       gap: '10px 24px',
       padding: '12px 14px 14px 42px',
-      background: '#F8F9FF',
-      borderTop: '1px solid #E8EBF1',
+      background: 'var(--helpdesk-surface-muted)',
+      borderTop: '1px solid var(--helpdesk-border)',
     }}>
       {campos.map(c => (
         <div key={c.label} style={{ fontSize: 12 }}>
-          <span style={{ color: '#7A8499', fontWeight: 600, display: 'block', marginBottom: 2 }}>{c.label}</span>
-          <span style={{ color: '#1B2336', fontWeight: 500 }}>{c.value}</span>
+          <span style={{ color: 'var(--helpdesk-text-muted)', fontWeight: 600, display: 'block', marginBottom: 2 }}>{c.label}</span>
+          <span style={{ color: 'var(--helpdesk-text)', fontWeight: 500 }}>{c.value}</span>
         </div>
       ))}
     </div>
@@ -3026,12 +3040,12 @@ function ViewInventario({ navTo, itensPatrimonio, unidades, usuarios, numToUuid,
             <button key={f.key} onClick={() => setTabStatus(f.key)} style={{
               border: 'none', background: 'none', cursor: 'pointer', padding: '8px 14px', fontSize: 13,
               fontWeight: tabStatus === f.key ? 700 : 500,
-              color: tabStatus === f.key ? '#0A328D' : '#7A8499',
-              borderBottom: tabStatus === f.key ? '2px solid #0A328D' : '2px solid transparent',
+              color: tabStatus === f.key ? 'var(--helpdesk-primary)' : '#7A8499',
+              borderBottom: tabStatus === f.key ? '2px solid var(--helpdesk-primary)' : '2px solid transparent',
               marginBottom: -1,
             }}>
               {f.label}
-              <span style={{ marginLeft: 5, fontSize: 11, background: tabStatus === f.key ? '#D9E1F4' : '#F2F4F8', color: tabStatus === f.key ? '#0A328D' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
+              <span style={{ marginLeft: 5, fontSize: 11, background: tabStatus === f.key ? 'var(--helpdesk-primary-soft)' : '#F2F4F8', color: tabStatus === f.key ? 'var(--helpdesk-primary)' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
                 {countsStatus[f.key] ?? 0}
               </span>
             </button>
@@ -3046,12 +3060,12 @@ function ViewInventario({ navTo, itensPatrimonio, unidades, usuarios, numToUuid,
             <button key={t} onClick={() => setTabTipo(t)} style={{
               border: 'none', background: 'none', cursor: 'pointer', padding: '8px 14px', fontSize: 13,
               fontWeight: tabTipo === t ? 700 : 500,
-              color: tabTipo === t ? '#0A328D' : '#7A8499',
-              borderBottom: tabTipo === t ? '2px solid #0A328D' : '2px solid transparent',
+              color: tabTipo === t ? 'var(--helpdesk-primary)' : '#7A8499',
+              borderBottom: tabTipo === t ? '2px solid var(--helpdesk-primary)' : '2px solid transparent',
               marginBottom: -1,
             }}>
               {t}
-              <span style={{ marginLeft: 5, fontSize: 11, background: tabTipo === t ? '#D9E1F4' : '#F2F4F8', color: tabTipo === t ? '#0A328D' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
+              <span style={{ marginLeft: 5, fontSize: 11, background: tabTipo === t ? 'var(--helpdesk-primary-soft)' : '#F2F4F8', color: tabTipo === t ? 'var(--helpdesk-primary)' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
                 {counts[t] || 0}
               </span>
             </button>
@@ -3081,12 +3095,14 @@ function ViewInventario({ navTo, itensPatrimonio, unidades, usuarios, numToUuid,
               return (
                 <Fragment key={i.idbem}>
                   <tr
+                    className="helpdesk-expandable-table-row"
+                    data-expanded={expanded}
                     style={{
                       borderTop: '1px solid #F2F4F8',
-                      background: expanded ? '#FAFBFD' : undefined,
+                      background: expanded ? 'var(--helpdesk-surface-muted)' : undefined,
                       transition: 'background 0.15s',
                     }}
-                    onMouseEnter={e => { if (!expanded) (e.currentTarget.style.background = '#FAFBFD'); }}
+                    onMouseEnter={e => { if (!expanded) (e.currentTarget.style.background = 'var(--helpdesk-surface-muted)'); }}
                     onMouseLeave={e => { if (!expanded) (e.currentTarget.style.background = ''); }}
                   >
                     <td style={{ padding: '10px 8px 10px 14px', verticalAlign: 'middle' }}>
@@ -3107,7 +3123,7 @@ function ViewInventario({ navTo, itensPatrimonio, unidades, usuarios, numToUuid,
                         </svg>
                       </button>
                     </td>
-                    <td style={{ padding: '10px 14px', fontSize: 13, fontWeight: 700, color: '#0A328D' }}>
+                    <td style={{ padding: '10px 14px', fontSize: 13, fontWeight: 700, color: 'var(--helpdesk-primary)' }}>
                       <button
                         type="button"
                         onClick={() => navTo('item-detalhe', i.idbem)}
@@ -3385,12 +3401,12 @@ function ViewMovimentacoes({ navTo, transferencias, baixas, statusHistorico, usu
             <button key={t.key} onClick={() => setAba(t.key)} style={{
               border: 'none', background: 'none', cursor: 'pointer', padding: '8px 14px', fontSize: 13,
               fontWeight: aba === t.key ? 700 : 500,
-              color: aba === t.key ? '#0A328D' : '#7A8499',
-              borderBottom: aba === t.key ? '2px solid #0A328D' : '2px solid transparent',
+              color: aba === t.key ? 'var(--helpdesk-primary)' : '#7A8499',
+              borderBottom: aba === t.key ? '2px solid var(--helpdesk-primary)' : '2px solid transparent',
               marginBottom: -1,
             }}>
               {t.label}
-              <span style={{ marginLeft: 5, fontSize: 11, background: aba === t.key ? '#D9E1F4' : '#F2F4F8', color: aba === t.key ? '#0A328D' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
+              <span style={{ marginLeft: 5, fontSize: 11, background: aba === t.key ? 'var(--helpdesk-primary-soft)' : '#F2F4F8', color: aba === t.key ? 'var(--helpdesk-primary)' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
                 {t.count}
               </span>
             </button>
@@ -3466,19 +3482,21 @@ function ConteudoTransferencias({ transferencias, usuarioPorId, itensPatrimonio 
                 return (
                   <Fragment key={t.id}>
                     <tr
+                      className="helpdesk-expandable-table-row"
+                      data-expanded={expanded}
                       onClick={() => setExpandedId(expanded ? null : t.id)}
                       style={{
                         borderBottom: expanded ? 'none' : '1px solid #F2F4F8',
                         cursor: 'pointer',
-                        background: expanded ? '#F8F9FF' : undefined,
+                        background: expanded ? 'var(--helpdesk-surface-muted)' : undefined,
                         transition: 'background 0.15s',
                       }}
                     >
-                      <td style={{ ...TD_STYLE, fontWeight: 700, color: '#0A328D' }}>{t.cimbpm}</td>
+                      <td style={{ ...TD_STYLE, fontWeight: 700, color: 'var(--helpdesk-primary)' }}>{t.cimbpm}</td>
                       <td style={{ ...TD_STYLE, color: '#4A5468', whiteSpace: 'nowrap' }}>{fmtData(t.dataTransferencia)}</td>
                       <td style={TD_STYLE}>{t.unidadeDestino}</td>
                       <td style={{ ...TD_STYLE, textAlign: 'center' }}>
-                        <span style={{ background: '#D9E1F4', color: '#0A328D', borderRadius: 12, padding: '2px 10px', fontSize: 12, fontWeight: 600 }}>
+                        <span style={{ background: 'var(--helpdesk-primary-soft)', color: 'var(--helpdesk-primary)', borderRadius: 12, padding: '2px 10px', fontSize: 12, fontWeight: 600 }}>
                           {t.itens.length}
                         </span>
                       </td>
@@ -3490,6 +3508,7 @@ function ConteudoTransferencias({ transferencias, usuarioPorId, itensPatrimonio 
                       </td>
                       <td style={{ ...TD_STYLE, paddingRight: 16 }}>
                         <svg
+                          className="helpdesk-transferencia-expand-icon"
                           width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A8499" strokeWidth="2"
                           style={{ display: 'block', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
                         >
@@ -3500,7 +3519,7 @@ function ConteudoTransferencias({ transferencias, usuarioPorId, itensPatrimonio 
                     {expanded && (
                       <tr style={{ borderBottom: '1px solid #F2F4F8' }}>
                         <td colSpan={7} style={{ padding: '0 14px 14px' }}>
-                          <div style={{ background: '#F4F5F9', borderRadius: 10, padding: 12 }}>
+                          <div className="helpdesk-table-expanded-content" style={{ background: 'var(--helpdesk-surface-muted)', borderRadius: 10, padding: 12 }}>
                             <div style={{ fontSize: 11, fontWeight: 700, color: '#7A8499', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
                               Itens transferidos
                             </div>
@@ -3522,7 +3541,7 @@ function ConteudoTransferencias({ transferencias, usuarioPorId, itensPatrimonio 
                                     : (ti.descricao || '—');
                                   return (
                                     <tr key={ti.id} style={{ borderBottom: '1px solid #EAEDF2' }}>
-                                      <td style={{ ...TD_STYLE, fontSize: 12, fontWeight: 700, color: '#0A328D' }}>{patrimonio}</td>
+                                      <td style={{ ...TD_STYLE, fontSize: 12, fontWeight: 700, color: 'var(--helpdesk-primary)' }}>{patrimonio}</td>
                                       <td style={{ ...TD_STYLE, fontSize: 12, color: '#4A5468' }}>{equipamento}</td>
                                       <td style={{ ...TD_STYLE, fontSize: 12, color: '#7A8499' }}>{ti.servidorAnterior}</td>
                                       <td style={{ ...TD_STYLE, fontSize: 12, color: '#1B2336' }}>{ti.servidorAtual}</td>
@@ -3591,12 +3610,12 @@ function ConteudoStatusHistorico({
             <button key={f.key} onClick={() => setFiltroStatus(f.key)} style={{
               border: 'none', background: 'none', cursor: 'pointer', padding: '8px 14px', fontSize: 13,
               fontWeight: filtroStatus === f.key ? 700 : 500,
-              color: filtroStatus === f.key ? '#0A328D' : '#7A8499',
-              borderBottom: filtroStatus === f.key ? '2px solid #0A328D' : '2px solid transparent',
+              color: filtroStatus === f.key ? 'var(--helpdesk-primary)' : '#7A8499',
+              borderBottom: filtroStatus === f.key ? '2px solid var(--helpdesk-primary)' : '2px solid transparent',
               marginBottom: -1,
             }}>
               {f.label}
-              <span style={{ marginLeft: 5, fontSize: 11, background: filtroStatus === f.key ? '#D9E1F4' : '#F2F4F8', color: filtroStatus === f.key ? '#0A328D' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
+              <span style={{ marginLeft: 5, fontSize: 11, background: filtroStatus === f.key ? 'var(--helpdesk-primary-soft)' : '#F2F4F8', color: filtroStatus === f.key ? 'var(--helpdesk-primary)' : '#7A8499', borderRadius: 10, padding: '1px 7px', fontWeight: 600 }}>
                 {countsStatus[f.key] ?? 0}
               </span>
             </button>
@@ -3633,7 +3652,7 @@ function ConteudoStatusHistorico({
                   onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = '#F8F9FF'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = ''; }}
                 >
-                  <td style={{ ...TD_STYLE, fontWeight: 700, color: '#0A328D' }}>{h.patrimonio}</td>
+                  <td style={{ ...TD_STYLE, fontWeight: 700, color: 'var(--helpdesk-primary)' }}>{h.patrimonio}</td>
                   <td style={{ ...TD_STYLE, color: '#4A5468', whiteSpace: 'nowrap' }}>{fmtData(h.criadoEm)}</td>
                   <td style={TD_STYLE}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -3713,7 +3732,7 @@ function ConteudoBaixas({ baixas, navTo }: Pick<ViewProps, 'baixas' | 'navTo'>) 
                   onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = '#F8F9FF'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = ''; }}
                 >
-                  <td style={{ ...TD_STYLE, fontWeight: 700, color: '#0A328D' }}>{b.patrimonio}</td>
+                  <td style={{ ...TD_STYLE, fontWeight: 700, color: 'var(--helpdesk-primary)' }}>{b.patrimonio}</td>
                   <td style={{ ...TD_STYLE, color: '#4A5468', maxWidth: 220 }}>
                     <span style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {b.descricao || '—'}
@@ -4259,7 +4278,7 @@ function RelatorioConteudoArea({
                       <span style={{ fontSize: 12, background: '#FCE5D0', color: '#7A3A0B', borderRadius: 12, padding: '2px 10px', fontWeight: 600 }}>{t.emAndamento}</span>
                     </td>
                     <td style={{ padding: '10px 14px', textAlign: 'center' }}>
-                      <span style={{ fontSize: 12, background: '#D9E1F4', color: '#0A328D', borderRadius: 12, padding: '2px 10px', fontWeight: 600 }}>{t.resolvidos}</span>
+                      <span className="helpdesk-report-resolved-count" style={{ fontSize: 12, background: '#D9E1F4', color: '#0A328D', borderRadius: 12, padding: '2px 10px', fontWeight: 600 }}>{t.resolvidos}</span>
                     </td>
                     <td style={{ padding: '10px 14px', textAlign: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
@@ -4322,6 +4341,8 @@ function ViewRelatorios({ chamados, usuarios, transferencias }: ViewProps) {
             <button
               key={t.key}
               type="button"
+              className="helpdesk-report-tab"
+              data-active={tab === t.key}
               onClick={() => setTab(t.key)}
               style={{
                 border: 'none',
@@ -4336,7 +4357,7 @@ function ViewRelatorios({ chamados, usuarios, transferencias }: ViewProps) {
               }}
             >
               {t.label}
-              <span style={{
+              <span className="helpdesk-report-tab-count" style={{
                 marginLeft: 5,
                 fontSize: 11,
                 background: tab === t.key ? `${t.cor}22` : '#F2F4F8',

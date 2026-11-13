@@ -31,6 +31,17 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(1 0 0 / 0.12);
   --sidebar-ring: oklch(1 0 0 / 0.30);
+  --helpdesk-background: #f4f5f9;
+  --helpdesk-surface: #fff;
+  --helpdesk-surface-muted: #fafbfd;
+  --helpdesk-text: #1b2336;
+  --helpdesk-text-subtle: #4a5468;
+  --helpdesk-text-muted: #7a8499;
+  --helpdesk-border: #e8ebf1;
+  --helpdesk-input-background: #e2e6ed;
+  --helpdesk-input-border: #8793a3;
+  --helpdesk-primary: #0a328d;
+  --helpdesk-primary-soft: #d9e1f4;
 }
 
 .dark {
@@ -40,7 +51,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.141 0.005 285.823);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.6613 0.214 14.64);
+  --primary: #f94668;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -52,15 +63,26 @@
   --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.274 0.006 286.033);
   --input: oklch(0.274 0.006 286.033);
-  --ring: oklch(0.442 0.017 285.786);
-  --sidebar: oklch(0.343 0.161 261.7);
-  --sidebar-foreground: oklch(1 0 0);
-  --sidebar-primary: oklch(1 0 0);
-  --sidebar-primary-foreground: oklch(0.343 0.161 261.7);
-  --sidebar-accent: oklch(1 0 0 / 0.06);
-  --sidebar-accent-foreground: oklch(1 0 0);
+  --ring: #f94668;
+  --sidebar: oklch(0.19 0.008 260);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: #f94668;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(1 0 0 / 0.10);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 0.12);
-  --sidebar-ring: oklch(1 0 0 / 0.30);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+  --helpdesk-background: var(--background);
+  --helpdesk-surface: var(--card);
+  --helpdesk-surface-muted: var(--muted);
+  --helpdesk-text: var(--foreground);
+  --helpdesk-text-subtle: var(--foreground);
+  --helpdesk-text-muted: var(--muted-foreground);
+  --helpdesk-border: var(--border);
+  --helpdesk-input-background: var(--helpdesk-surface);
+  --helpdesk-input-border: var(--helpdesk-border);
+  --helpdesk-primary: var(--primary);
+  --helpdesk-primary-soft: color-mix(in srgb, var(--primary) 22%, var(--muted));
 }
 
 @layer base {
@@ -75,4 +97,192 @@
     color: var(--foreground);
     min-width: 0;
   }
+}
+
+.helpdesk-app {
+  background-color: var(--helpdesk-background) !important;
+  color: var(--helpdesk-text) !important;
+}
+
+.helpdesk-app [style*="background: rgb(255, 255, 255)"],
+.helpdesk-app [style*="background-color: rgb(255, 255, 255)"],
+.helpdesk-app [style*="background:#fff" i],
+.helpdesk-app [style*="background: #fff" i] {
+  background-color: var(--helpdesk-surface) !important;
+}
+
+.helpdesk-app [style*="background: rgb(250, 251, 253)"],
+.helpdesk-app [style*="background-color: rgb(250, 251, 253)"],
+.helpdesk-app [style*="background:#fafbfd" i],
+.helpdesk-app [style*="background: #fafbfd" i],
+.helpdesk-app [style*="background: rgb(244, 245, 249)"],
+.helpdesk-app [style*="background-color: rgb(244, 245, 249)"],
+.helpdesk-app [style*="background:#f4f5f9" i],
+.helpdesk-app [style*="background: #f4f5f9" i],
+.helpdesk-app [style*="background: rgb(242, 244, 248)"],
+.helpdesk-app [style*="background-color: rgb(242, 244, 248)"] {
+  background-color: var(--helpdesk-surface-muted) !important;
+}
+
+.helpdesk-app [style*="color:#1b2336" i],
+.helpdesk-app [style*="color: #1b2336" i],
+.helpdesk-app [style*="color:#18181b" i],
+.helpdesk-app [style*="color: #18181b" i],
+.helpdesk-app [style*="color:#3f3f46" i],
+.helpdesk-app [style*="color: #3f3f46" i],
+.helpdesk-app [style*="color:#4a5468" i],
+.helpdesk-app [style*="color: #4a5468" i],
+.helpdesk-app [style*="color:#52525b" i],
+.helpdesk-app [style*="color: #52525b" i],
+.helpdesk-app [style*="color: rgb(27, 35, 54)"],
+.helpdesk-app [style*="color: rgb(74, 84, 104)"] {
+  color: var(--helpdesk-text) !important;
+}
+
+.helpdesk-app [style*="color:#71717a" i],
+.helpdesk-app [style*="color: #71717a" i],
+.helpdesk-app [style*="color:#7a8499" i],
+.helpdesk-app [style*="color: #7a8499" i],
+.helpdesk-app [style*="color: rgb(122, 132, 153)"],
+.helpdesk-app svg[stroke="#7A8499"] {
+  color: var(--helpdesk-text-muted) !important;
+}
+
+.helpdesk-app [style*="background: rgb(10, 50, 141)"],
+.helpdesk-app [style*="background-color: rgb(10, 50, 141)"],
+.helpdesk-app [style*="background:#0a328d" i],
+.helpdesk-app [style*="background: #0a328d" i] {
+  background-color: var(--helpdesk-primary) !important;
+}
+
+.helpdesk-app [style*="background: rgb(217, 225, 244)"],
+.helpdesk-app [style*="background-color: rgb(217, 225, 244)"],
+.helpdesk-app [style*="background:#d9e1f4" i],
+.helpdesk-app [style*="background: #d9e1f4" i] {
+  background-color: var(--helpdesk-primary-soft) !important;
+}
+
+.helpdesk-app [style*="rgb(232, 235, 241)"],
+.helpdesk-app [style*="rgb(208, 213, 221)"],
+.helpdesk-app [style*="rgb(242, 244, 248)"],
+.helpdesk-app [style*="#e8ebf1" i],
+.helpdesk-app [style*="#e4e4e7" i],
+.helpdesk-app [style*="#f2f4f8" i] {
+  border-color: var(--helpdesk-border) !important;
+}
+
+.dark .helpdesk-app {
+  color-scheme: dark;
+}
+
+.dark .helpdesk-app .helpdesk-status-badge[data-status='resolvido'] {
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-expandable-table-row[data-expanded='true'],
+.dark .helpdesk-app .helpdesk-table-expanded-content {
+  background-color: var(--helpdesk-background) !important;
+}
+
+.dark .helpdesk-app .helpdesk-transferencia-expand-icon {
+  stroke: var(--helpdesk-primary);
+}
+
+.dark .helpdesk-app .helpdesk-user-info-trigger,
+.dark .helpdesk-app .helpdesk-user-info-text {
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-user-info-icon {
+  stroke: #f94668;
+}
+
+.dark .helpdesk-app .helpdesk-chat-tab[data-active='true'] {
+  color: #f94668 !important;
+  border-bottom-color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-tab[data-active='true'] .helpdesk-chat-tab-count {
+  background-color: color-mix(in srgb, #f94668 22%, var(--muted)) !important;
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-message[data-message-kind='requester'] {
+  background-color: var(--helpdesk-surface-muted) !important;
+  border-color: var(--helpdesk-border) !important;
+  color: var(--helpdesk-text) !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-message[data-message-kind='requester'] a {
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-action-menu {
+  background-color: var(--helpdesk-surface) !important;
+  border-color: var(--helpdesk-border) !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-action-option {
+  background-color: var(--helpdesk-surface-muted) !important;
+  color: var(--helpdesk-text) !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-action-option:hover {
+  background-color: color-mix(in srgb, #f94668 18%, var(--helpdesk-surface)) !important;
+}
+
+.dark .helpdesk-app .helpdesk-light-background-textarea {
+  background-color: #f4f5f9 !important;
+  color: #1b2336 !important;
+}
+
+.dark .helpdesk-app .helpdesk-chat-action-icon {
+  stroke: #f94668;
+}
+
+.dark .helpdesk-app .helpdesk-report-tab[data-active='true'] {
+  color: #f94668 !important;
+  border-bottom-color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-report-tab[data-active='true'] .helpdesk-report-tab-count {
+  background-color: color-mix(in srgb, #f94668 22%, var(--muted)) !important;
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-report-donut-total,
+.dark .helpdesk-app .helpdesk-report-donut-label {
+  fill: #f94668;
+}
+
+.dark .helpdesk-app .helpdesk-report-resolved-count {
+  background-color: color-mix(in srgb, #f94668 22%, var(--muted)) !important;
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-person-toggle[data-selected='true'] {
+  background: var(--helpdesk-primary-soft) !important;
+  border-color: var(--helpdesk-primary) !important;
+  color: var(--helpdesk-primary) !important;
+}
+
+.dark .helpdesk-app .helpdesk-person-toggle[data-selected='false'] {
+  background: var(--helpdesk-surface) !important;
+  border-color: var(--helpdesk-border) !important;
+  color: var(--helpdesk-text-subtle) !important;
+}
+
+.dark .helpdesk-app .helpdesk-actor-add-button {
+  border-color: #f94668 !important;
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-assign-to-me-button {
+  border-color: #f94668 !important;
+  color: #f94668 !important;
+}
+
+.dark .helpdesk-app .helpdesk-area-badge-dark-theme {
+  background: var(--helpdesk-primary-soft) !important;
+  color: var(--helpdesk-primary) !important;
 }

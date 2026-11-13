@@ -602,7 +602,7 @@ export function ViewNovoChamadoAssistente({
   if (!usuarioLogado) {
     return (
       <div style={{ padding: 24, maxWidth: 720, margin: '0 auto' }}>
-        <p style={{ fontSize: 13, color: '#71717a' }}>
+        <p style={{ fontSize: 13, color: 'var(--helpdesk-text-muted)' }}>
           {usuarioLogadoId === null ? 'Carregando seus dados...' : 'Usuário logado não encontrado na base do helpdesk.'}
         </p>
       </div>
@@ -614,21 +614,21 @@ export function ViewNovoChamadoAssistente({
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-          <div style={{ fontSize: 13, color: '#71717a', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button type="button" onClick={() => navTo('chamados')} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: '#71717a', cursor: 'pointer' }}>Chamados</button>
+          <div style={{ fontSize: 13, color: 'var(--helpdesk-text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button type="button" onClick={() => navTo('chamados')} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: 'var(--helpdesk-text-muted)', cursor: 'pointer' }}>Chamados</button>
             <span>›</span>
-            <span style={{ color: '#18181b', fontWeight: 500 }}>Novo chamado</span>
+            <span style={{ color: 'var(--helpdesk-text)', fontWeight: 500 }}>Novo chamado</span>
           </div>
           <button type="button" onClick={() => navTo('novo-chamado')} title="Uso interno da equipe técnica de suporte"
-            style={{ background: 'none', border: 'none', padding: 0, fontSize: 12, color: '#71717a', textDecoration: 'underline dotted', textUnderlineOffset: 3, cursor: 'pointer' }}>
+            style={{ background: 'none', border: 'none', padding: 0, fontSize: 12, color: 'var(--helpdesk-primary)', textDecoration: 'underline dotted', textUnderlineOffset: 3, cursor: 'pointer' }}>
             Sou técnico, abrir chamado direto
           </button>
         </div>
 
         {!isSuccess && (
           <div>
-            <h1 style={{ fontSize: 28, fontWeight: 700, color: '#18181b', margin: '0 0 6px', letterSpacing: '-0.01em' }}>Abrir chamado</h1>
-            <p style={{ fontSize: 14, color: '#52525b', margin: 0 }}>Responda algumas perguntas rápidas. A gente descobre pra qual área encaminhar.</p>
+            <h1 style={{ fontSize: 28, fontWeight: 700, color: 'var(--helpdesk-text)', margin: '0 0 6px', letterSpacing: '-0.01em' }}>Abrir chamado</h1>
+            <p style={{ fontSize: 14, color: 'var(--helpdesk-text-muted)', margin: 0 }}>Responda algumas perguntas rápidas. A gente descobre pra qual área encaminhar.</p>
           </div>
         )}
 
@@ -652,20 +652,20 @@ export function ViewNovoChamadoAssistente({
                 <div style={{
                   width: 24, height: 24, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 11, fontWeight: 700, flexShrink: 0,
-                  background: i <= currentPhaseIdx ? '#0A328D' : '#E4E4E7',
-                  color: i <= currentPhaseIdx ? '#FFFFFF' : '#71717A',
+                  background: i <= currentPhaseIdx ? 'var(--helpdesk-primary)' : 'var(--helpdesk-border)',
+                  color: i <= currentPhaseIdx ? '#FFFFFF' : 'var(--helpdesk-text-muted)',
                 }}>{i + 1}</div>
-                <span style={{ fontSize: 12.5, color: i === currentPhaseIdx ? '#18181B' : '#71717A', fontWeight: i === currentPhaseIdx ? 600 : 400 }}>{ph.label}</span>
-                {i < phaseDefs.length - 1 && <div style={{ width: 20, height: 1, background: '#d4d4d8' }} />}
+                <span style={{ fontSize: 12.5, color: i === currentPhaseIdx ? 'var(--helpdesk-text)' : 'var(--helpdesk-text-muted)', fontWeight: i === currentPhaseIdx ? 600 : 400 }}>{ph.label}</span>
+                {i < phaseDefs.length - 1 && <div style={{ width: 20, height: 1, background: 'var(--helpdesk-border)' }} />}
               </div>
             ))}
           </div>
         )}
 
-        <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: 14, padding: 28, boxShadow: '0 1px 2px rgba(0,0,0,.04)' }}>
+        <div style={{ background: 'var(--helpdesk-surface)', border: '1px solid var(--helpdesk-border)', borderRadius: 14, padding: 28, boxShadow: '0 1px 2px rgba(0,0,0,.04)' }}>
 
           {canGoBack && (
-            <button type="button" onClick={goBack} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: '#71717a', fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 18 }}>
+            <button type="button" onClick={goBack} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: 'var(--helpdesk-text-muted)', fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 18 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
               Voltar
             </button>
@@ -679,8 +679,8 @@ export function ViewNovoChamadoAssistente({
 
           {isParaQuem && (
             <>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: '#18181b', margin: 0 }}>{step.title}</h2>
-              {step.subtitle && <p style={{ fontSize: 13.5, color: '#71717a', margin: '6px 0 0' }}>{step.subtitle}</p>}
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--helpdesk-text)', margin: 0 }}>{step.title}</h2>
+              {step.subtitle && <p style={{ fontSize: 13.5, color: 'var(--helpdesk-text-muted)', margin: '6px 0 0' }}>{step.subtitle}</p>}
               <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
                 {[
                   { v: false, label: 'Para mim' },
@@ -690,9 +690,9 @@ export function ViewNovoChamadoAssistente({
                     onClick={() => updateField('paraOutraPessoa', opt.v)}
                     style={{
                       flex: 1, padding: '10px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: 600,
-                      border: `2px solid ${answers.paraOutraPessoa === opt.v ? '#0A328D' : '#e4e4e7'}`,
-                      background: answers.paraOutraPessoa === opt.v ? '#D9E1F4' : '#fff',
-                      color: answers.paraOutraPessoa === opt.v ? '#0A328D' : '#3f3f46',
+                      border: `2px solid ${answers.paraOutraPessoa === opt.v ? 'var(--helpdesk-primary)' : 'var(--helpdesk-border)'}`,
+                      background: answers.paraOutraPessoa === opt.v ? 'var(--helpdesk-primary-soft)' : 'var(--helpdesk-surface)',
+                      color: answers.paraOutraPessoa === opt.v ? 'var(--helpdesk-primary)' : 'var(--helpdesk-text-subtle)',
                     }}>
                     {opt.label}
                   </button>
@@ -700,7 +700,7 @@ export function ViewNovoChamadoAssistente({
               </div>
               {answers.paraOutraPessoa && (
                 <div style={{ marginTop: 16 }}>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#3f3f46', marginBottom: 6 }}>Quem precisa de ajuda?</label>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--helpdesk-text-subtle)', marginBottom: 6 }}>Quem precisa de ajuda?</label>
                   <AutocompleteInput
                     value={answers.colega}
                     onChange={(u) => updateField('colega', u)}
@@ -709,7 +709,7 @@ export function ViewNovoChamadoAssistente({
                     getKey={(u) => u.id}
                     placeholder="Digite o nome da pessoa..."
                   />
-                  <div style={{ fontSize: 11.5, color: '#7A8499', marginTop: 6 }}>
+                  <div style={{ fontSize: 11.5, color: 'var(--helpdesk-text-muted)', marginTop: 6 }}>
                     Você ficará como observador deste chamado para acompanhar o andamento.
                   </div>
                 </div>
@@ -718,7 +718,7 @@ export function ViewNovoChamadoAssistente({
                 onClick={() => pushHistoryAndGo(proximaAposIdentificacao, {})}
                 disabled={answers.paraOutraPessoa && !answers.colega}
                 style={{
-                  marginTop: 22, padding: '11px 22px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600,
+                  marginTop: 22, padding: '11px 22px', borderRadius: 8, border: 'none', background: 'var(--helpdesk-primary)', color: '#fff', fontSize: 14, fontWeight: 600,
                   cursor: (answers.paraOutraPessoa && !answers.colega) ? 'not-allowed' : 'pointer',
                   opacity: (answers.paraOutraPessoa && !answers.colega) ? 0.6 : 1,
                 }}>
@@ -729,20 +729,20 @@ export function ViewNovoChamadoAssistente({
 
           {isChoice && step.options && (
             <>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: '#18181b', margin: 0 }}>{step.title}</h2>
-              {step.subtitle && <p style={{ fontSize: 13.5, color: '#71717a', margin: '6px 0 0' }}>{step.subtitle}</p>}
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--helpdesk-text)', margin: 0 }}>{step.title}</h2>
+              {step.subtitle && <p style={{ fontSize: 13.5, color: 'var(--helpdesk-text-muted)', margin: '6px 0 0' }}>{step.subtitle}</p>}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
                 {step.options.map((opt) => (
                   <button key={opt.label} type="button" onClick={() => selectOption(opt)}
-                    style={{ display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left', border: '1px solid #e4e4e7', background: '#fff', borderRadius: 10, padding: '14px 16px', cursor: 'pointer' }}>
+                    style={{ display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left', border: '1px solid var(--helpdesk-border)', background: 'var(--helpdesk-surface)', borderRadius: 10, padding: '14px 16px', cursor: 'pointer', color: 'var(--helpdesk-text)' }}>
                     {opt.icon && (
-                      <div style={{ width: 38, height: 38, borderRadius: 8, background: '#EEF1FA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#0A328D' }}>
+                      <div style={{ width: 38, height: 38, borderRadius: 8, background: 'var(--helpdesk-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--helpdesk-primary)' }}>
                         <Icone nome={opt.icon} />
                       </div>
                     )}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14.5, fontWeight: 600, color: '#18181b' }}>{opt.label}</div>
-                      {opt.desc && <div style={{ fontSize: 12.5, color: '#71717a', marginTop: 2 }}>{opt.desc}</div>}
+                      <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--helpdesk-text)' }}>{opt.label}</div>
+                      {opt.desc && <div style={{ fontSize: 12.5, color: 'var(--helpdesk-text-muted)', marginTop: 2 }}>{opt.desc}</div>}
                     </div>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="m9 18 6-6-6-6" /></svg>
                   </button>
@@ -753,12 +753,12 @@ export function ViewNovoChamadoAssistente({
 
           {isSugestao && step.options && (
             <>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: '#18181b', margin: 0 }}>{step.title}</h2>
-              <p style={{ fontSize: 13.5, color: '#52525b', margin: '8px 0 0', background: '#F4F5F9', borderRadius: 8, padding: '12px 14px' }}>{step.sugestaoMotivoDisplay}</p>
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--helpdesk-text)', margin: 0 }}>{step.title}</h2>
+              <p style={{ fontSize: 13.5, color: 'var(--helpdesk-text-muted)', margin: '8px 0 0', background: 'var(--helpdesk-surface-muted)', borderRadius: 8, padding: '12px 14px' }}>{step.sugestaoMotivoDisplay}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
                 {step.options.map((opt) => (
                   <button key={opt.label} type="button" onClick={() => selectOption(opt)}
-                    style={{ textAlign: 'left', border: '1px solid #e4e4e7', background: '#fff', borderRadius: 10, padding: '14px 16px', cursor: 'pointer', fontSize: 14.5, fontWeight: 600, color: '#18181b' }}>
+                    style={{ textAlign: 'left', border: '1px solid var(--helpdesk-border)', background: 'var(--helpdesk-surface)', borderRadius: 10, padding: '14px 16px', cursor: 'pointer', fontSize: 14.5, fontWeight: 600, color: 'var(--helpdesk-text)' }}>
                     {opt.label}
                   </button>
                 ))}
@@ -771,10 +771,10 @@ export function ViewNovoChamadoAssistente({
               <div style={{ width: 56, height: 56, borderRadius: 999, background: '#EEE2F7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B3E91', marginBottom: 16 }}>
                 <Icone nome="key" />
               </div>
-              <h2 style={{ fontSize: 19, fontWeight: 700, color: '#18181b', margin: '0 0 6px' }}>{step.title}</h2>
-              <p style={{ fontSize: 13.5, color: '#71717a', margin: '0 0 18px', maxWidth: 420 }}>{step.sugestaoMotivoDisplay}</p>
+              <h2 style={{ fontSize: 19, fontWeight: 700, color: 'var(--helpdesk-text)', margin: '0 0 6px' }}>{step.title}</h2>
+              <p style={{ fontSize: 13.5, color: 'var(--helpdesk-text-muted)', margin: '0 0 18px', maxWidth: 420 }}>{step.sugestaoMotivoDisplay}</p>
               <button type="button" onClick={() => router.push('/helpdesk/chamados/acesso-sistemas/novo')}
-                style={{ padding: '11px 22px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                style={{ padding: '11px 22px', borderRadius: 8, border: 'none', background: 'var(--helpdesk-primary)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                 Continuar para solicitação de acesso
               </button>
             </div>
@@ -782,22 +782,22 @@ export function ViewNovoChamadoAssistente({
 
           {isForm && (
             <>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: '#18181b', margin: '0 0 18px' }}>{step.title}</h2>
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--helpdesk-text)', margin: '0 0 18px' }}>{step.title}</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {fields.map((f) => (
                   <div key={f.key}>
-                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#3f3f46', marginBottom: 6 }}>{f.label}</label>
+                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--helpdesk-text-subtle)', marginBottom: 6 }}>{f.label}</label>
                     {f.type === 'text' && (
                       <input value={String(answers[f.key] ?? '')} onChange={(e) => updateField(f.key, e.target.value as never)} placeholder={f.placeholder}
-                        style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid #e4e4e7', borderRadius: 8, fontSize: 14, color: '#18181b', background: '#fff' }} />
+                        style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid var(--helpdesk-border)', borderRadius: 8, fontSize: 14, color: 'var(--helpdesk-text)', background: 'var(--helpdesk-surface)' }} />
                     )}
                     {f.type === 'textarea' && (
                       <textarea value={String(answers[f.key] ?? '')} onChange={(e) => updateField(f.key, e.target.value as never)} placeholder={f.placeholder} rows={4}
-                        style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid #e4e4e7', borderRadius: 8, fontSize: 14, color: '#18181b', background: '#fff', resize: 'vertical', fontFamily: 'inherit' }} />
+                        style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid var(--helpdesk-border)', borderRadius: 8, fontSize: 14, color: 'var(--helpdesk-text)', background: 'var(--helpdesk-surface)', resize: 'vertical', fontFamily: 'inherit' }} />
                     )}
                     {f.type === 'select' && (
                       <select value={String(answers[f.key] ?? '')} onChange={(e) => updateField(f.key, e.target.value as never)}
-                        style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid #e4e4e7', borderRadius: 8, fontSize: 14, color: '#18181b', background: '#fff' }}>
+                        style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid var(--helpdesk-border)', borderRadius: 8, fontSize: 14, color: 'var(--helpdesk-text)', background: 'var(--helpdesk-surface)' }}>
                         <option value="">Selecione...</option>
                         {(f.options ?? []).map((o) => <option key={o} value={o}>{o}</option>)}
                       </select>
@@ -816,7 +816,7 @@ export function ViewNovoChamadoAssistente({
                 ))}
               </div>
               <button type="button" onClick={() => step.next && pushHistoryAndGo(step.next, {})} disabled={formDisabled}
-                style={{ marginTop: 22, padding: '11px 22px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600, cursor: formDisabled ? 'not-allowed' : 'pointer', opacity: formDisabled ? 0.6 : 1 }}>
+                style={{ marginTop: 22, padding: '11px 22px', borderRadius: 8, border: 'none', background: 'var(--helpdesk-primary)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: formDisabled ? 'not-allowed' : 'pointer', opacity: formDisabled ? 0.6 : 1 }}>
                 Continuar
               </button>
             </>
@@ -824,32 +824,32 @@ export function ViewNovoChamadoAssistente({
 
           {isSummary && areaMeta && (
             <>
-              <h2 style={{ fontSize: 18, fontWeight: 600, color: '#18181b', margin: '0 0 18px' }}>Confira as informações</h2>
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--helpdesk-text)', margin: '0 0 18px' }}>Confira as informações</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <LinhaResumo label="Área responsável">
                   <span style={{ fontSize: 12.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, background: areaMeta.corBg, color: areaMeta.corText }}>{areaMeta.label}</span>
                 </LinhaResumo>
                 {answers.paraOutraPessoa && (
                   <LinhaResumo label="Solicitante">
-                    <span style={{ fontSize: 13.5, color: '#18181b', fontWeight: 500 }}>{answers.colega?.nome ?? 'Não selecionado'}</span>
+                    <span style={{ fontSize: 13.5, color: 'var(--helpdesk-text)', fontWeight: 500 }}>{answers.colega?.nome ?? 'Não selecionado'}</span>
                   </LinhaResumo>
                 )}
                 <LinhaResumo label="Categoria">
-                  <span style={{ fontSize: 13.5, color: '#18181b', fontWeight: 500 }}>{answers.subcategoria || 'Não especificado'}</span>
+                  <span style={{ fontSize: 13.5, color: 'var(--helpdesk-text)', fontWeight: 500 }}>{answers.subcategoria || 'Não especificado'}</span>
                 </LinhaResumo>
                 <LinhaResumo label="Local">
-                  <span style={{ fontSize: 13.5, color: '#18181b', fontWeight: 500 }}>{[answers.unidade?.full, answers.local].filter(Boolean).join(' — ') || 'Não informado'}</span>
+                  <span style={{ fontSize: 13.5, color: 'var(--helpdesk-text)', fontWeight: 500 }}>{[answers.unidade?.full, answers.local].filter(Boolean).join(' — ') || 'Não informado'}</span>
                 </LinhaResumo>
                 <LinhaResumo label="Abrangência">
-                  <span style={{ fontSize: 13.5, color: '#18181b', fontWeight: 500 }}>{answers.abrangencia || 'Somente eu'}</span>
+                  <span style={{ fontSize: 13.5, color: 'var(--helpdesk-text)', fontWeight: 500 }}>{answers.abrangencia || 'Somente eu'}</span>
                 </LinhaResumo>
                 <LinhaResumo label="Prioridade" ultima>
                   <span style={{ fontSize: 12.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, background: prioridadeBg, color: prioridadeColor }}>{prioridadeFinal}</span>
                 </LinhaResumo>
               </div>
-              <div style={{ marginTop: 6, background: '#F4F5F9', borderRadius: 8, padding: '14px 16px' }}>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: '#71717a', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 6 }}>Resumo</div>
-                <p style={{ fontSize: 13.5, color: '#3f3f46', margin: 0, lineHeight: 1.5 }}>{gerarResumo(answers)}</p>
+              <div style={{ marginTop: 6, background: 'var(--helpdesk-surface-muted)', borderRadius: 8, padding: '14px 16px' }}>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--helpdesk-text-muted)', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 6 }}>Resumo</div>
+                <p style={{ fontSize: 13.5, color: 'var(--helpdesk-text-subtle)', margin: 0, lineHeight: 1.5 }}>{gerarResumo(answers)}</p>
               </div>
               {areaFinal === 'suporte_tecnico' && !computadorAuto && (
                 <div style={{ marginTop: 12, background: '#FCE5D0', borderRadius: 8, padding: '12px 14px' }}>
@@ -867,13 +867,13 @@ export function ViewNovoChamadoAssistente({
                 </div>
               )}
               <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
-                <button type="button" onClick={resetAll} style={{ flex: 1, padding: '11px 18px', borderRadius: 8, border: '1px solid #e4e4e7', background: '#fff', color: '#3f3f46', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Recomeçar</button>
+                <button type="button" onClick={resetAll} style={{ flex: 1, padding: '11px 18px', borderRadius: 8, border: '1px solid var(--helpdesk-border)', background: 'var(--helpdesk-surface)', color: 'var(--helpdesk-text-subtle)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>Recomeçar</button>
                 {(() => {
                   const faltaComputador = areaFinal === 'suporte_tecnico' && !computadorAuto && !answers.itemManual;
                   const abrirDesabilitado = salvando || faltaComputador;
                   return (
                     <button type="button" onClick={openTicket} disabled={abrirDesabilitado}
-                      style={{ flex: 2, padding: '11px 18px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600, cursor: abrirDesabilitado ? 'not-allowed' : 'pointer', opacity: abrirDesabilitado ? 0.6 : 1 }}>
+                      style={{ flex: 2, padding: '11px 18px', borderRadius: 8, border: 'none', background: 'var(--helpdesk-primary)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: abrirDesabilitado ? 'not-allowed' : 'pointer', opacity: abrirDesabilitado ? 0.6 : 1 }}>
                       {salvando ? 'Abrindo...' : 'Abrir chamado'}
                     </button>
                   );
@@ -887,15 +887,15 @@ export function ViewNovoChamadoAssistente({
               <div style={{ width: 56, height: 56, borderRadius: 999, background: '#DCEEE3', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E7A46', marginBottom: 16 }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="m22 4-10 10-3-3" /></svg>
               </div>
-              <h2 style={{ fontSize: 19, fontWeight: 700, color: '#18181b', margin: '0 0 6px' }}>Chamado aberto com sucesso</h2>
-              <p style={{ fontSize: 13.5, color: '#71717a', margin: '0 0 18px' }}>A equipe responsável vai assumir o atendimento em breve.</p>
-              <div style={{ fontFamily: 'ui-monospace, monospace', fontSize: 15, fontWeight: 600, color: '#18181b', background: '#F4F5F9', borderRadius: 8, padding: '8px 16px', marginBottom: 10 }}>#{chamadoCriado.id}</div>
+              <h2 style={{ fontSize: 19, fontWeight: 700, color: 'var(--helpdesk-text)', margin: '0 0 6px' }}>Chamado aberto com sucesso</h2>
+              <p style={{ fontSize: 13.5, color: 'var(--helpdesk-text-muted)', margin: '0 0 18px' }}>A equipe responsável vai assumir o atendimento em breve.</p>
+              <div style={{ fontFamily: 'ui-monospace, monospace', fontSize: 15, fontWeight: 600, color: 'var(--helpdesk-text)', background: 'var(--helpdesk-surface-muted)', borderRadius: 8, padding: '8px 16px', marginBottom: 10 }}>#{chamadoCriado.id}</div>
               <span style={{ fontSize: 12.5, fontWeight: 700, padding: '4px 10px', borderRadius: 999, background: areaMeta.corBg, color: areaMeta.corText, marginBottom: 22 }}>{areaMeta.label}</span>
               <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
-                <button type="button" onClick={resetAll} style={{ padding: '11px 22px', borderRadius: 8, border: '1px solid #e4e4e7', background: '#fff', color: '#3f3f46', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                <button type="button" onClick={resetAll} style={{ padding: '11px 22px', borderRadius: 8, border: '1px solid var(--helpdesk-border)', background: 'var(--helpdesk-surface)', color: 'var(--helpdesk-text-subtle)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                   Abrir outro chamado
                 </button>
-                <button type="button" onClick={() => navTo('chamado-detalhe', chamadoCriado.id)} style={{ padding: '11px 22px', borderRadius: 8, border: 'none', background: '#0A328D', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                <button type="button" onClick={() => navTo('chamado-detalhe', chamadoCriado.id)} style={{ padding: '11px 22px', borderRadius: 8, border: 'none', background: 'var(--helpdesk-primary)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                   Ver chamado
                 </button>
               </div>
@@ -911,7 +911,7 @@ export function ViewNovoChamadoAssistente({
 function LinhaResumo({ label, children, ultima }: { label: string; children: ReactNode; ultima?: boolean }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: ultima ? 'none' : '1px solid #f1f1f4' }}>
-      <span style={{ fontSize: 13, color: '#71717a' }}>{label}</span>
+      <span style={{ fontSize: 13, color: 'var(--helpdesk-text-muted)' }}>{label}</span>
       {children}
     </div>
   );

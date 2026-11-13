@@ -14,17 +14,17 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   await prisma.usuario.upsert({
-    where: { login: "d927014" },
+    where: { login: "x601934" },
     update: {
-      email: "vmabreu@prefeitura.sp.gov.br",
+      email: "braliotti@prefeitura.sp.gov.br",
       desenvolvedor: true,
       permissao: "DEV",
       nome: "Victor Alexander Menezes de Abreu",
     },
     create: {
-      login: "d927014",
+      login: "x601934",
       nome: "Victor Alexander Menezes de Abreu",
-      email: "vmabreu@prefeitura.sp.gov.br",
+      email: "braliotti@prefeitura.sp.gov.br",
       desenvolvedor: true,
       permissao: "DEV",
     },
