@@ -1,72 +1,95 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
   ImageIcon,
+  Images,
   RotateCcw,
   Upload,
 } from "lucide-react";
 import { Boxes } from "@/app/mockup/mockBoxes";
 import { Button } from "@/components/mockup/Button";
+import {
+  CampaignUploadModal,
+  type CampaignUploadData,
+} from "@/components/mockup/campaign-upload-modal";
 import { FastAcess } from "./mockFastAcess";
 
 const DEFAULT_POSTER_URL = "/mockup/campanhas/30-9-2026/1.png";
 const DEFAULT_POSTER_LABEL = "Segurança Elétrica — 30/09/2026";
+const DEFAULT_POSTER_DESCRIPTION =
+  "Atualizado periodicamente pela CIPA. Clique no quadro ao lado ou arraste novas imagens para cadastrar e substituir o cartaz em exibição — todos os cartazes anteriores permanecem organizados na linha do tempo de Campanhas.";
+
+function formatIsoDatePtBr(isoDate: string): string {
+  const [year, month, day] = isoDate.split("-");
+  if (!year || !month || !day) return isoDate;
+  return `${day}/${month}/${year}`;
+}
 
 export default function MockupHomePage() {
   const router = useRouter();
   const [preview, setPreview] = useState<string | null>(DEFAULT_POSTER_URL);
-  const [customObjectUrl, setCustomObjectUrl] = useState<string | null>(null);
+  const [customObjectUrls, setCustomObjectUrls] = useState<string[]>([]);
   const [posterLabel, setPosterLabel] = useState<string>(DEFAULT_POSTER_LABEL);
+  const [posterTag, setPosterTag] = useState<string>("Destaque CIPA");
+  const [posterDescription, setPosterDescription] = useState<string>(
+    DEFAULT_POSTER_DESCRIPTION
+  );
+  const [posterSlidesCount, setPosterSlidesCount] = useState<number>(1);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [droppedFiles, setDroppedFiles] = useState<File[] | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     return () => {
-      if (customObjectUrl) {
-        URL.revokeObjectURL(customObjectUrl);
-      }
+      customObjectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [customObjectUrl]);
+  }, [customObjectUrls]);
 
-  const applySelectedFile = (file: File | undefined) => {
-    if (!file || !file.type.startsWith("image/")) return;
-
-    if (customObjectUrl) {
-      URL.revokeObjectURL(customObjectUrl);
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setCustomObjectUrl(objectUrl);
-    setPreview(objectUrl);
-    setPosterLabel(file.name);
+  const handleOpenModal = (files?: File[]) => {
+    setDroppedFiles(files && files.length > 0 ? files : undefined);
+    setIsUploadModalOpen(true);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    applySelectedFile(e.target.files?.[0]);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
+  const handleDropOnCard = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDraggingOver(false);
-    applySelectedFile(e.dataTransfer.files?.[0]);
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+    handleOpenModal(files);
+  };
+
+  const handleSaveCampaign = (data: CampaignUploadData) => {
+    customObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+
+    const urls = data.slides.map((s) => s.previewUrl);
+    setCustomObjectUrls(urls);
+    setPreview(urls[0] ?? DEFAULT_POSTER_URL);
+    setPosterTag(data.tag);
+    setPosterLabel(`${data.title} — ${formatIsoDatePtBr(data.date)}`);
+    setPosterDescription(data.description);
+    setPosterSlidesCount(data.slides.length);
+    setIsUploadModalOpen(false);
+    setDroppedFiles(undefined);
   };
 
   const handleRestoreDefault = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (customObjectUrl) {
-      URL.revokeObjectURL(customObjectUrl);
-      setCustomObjectUrl(null);
-    }
+    customObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    setCustomObjectUrls([]);
     setPreview(DEFAULT_POSTER_URL);
+    setPosterTag("Destaque CIPA");
     setPosterLabel(DEFAULT_POSTER_LABEL);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    setPosterDescription(DEFAULT_POSTER_DESCRIPTION);
+    setPosterSlidesCount(1);
   };
 
   return (
@@ -121,12 +144,12 @@ export default function MockupHomePage() {
         <section
           role="button"
           tabIndex={0}
-          aria-label="Selecionar ou arrastar nova imagem para o cartaz do mês"
-          onClick={() => fileInputRef.current?.click()}
+          aria-label="Abrir modal para enviar fotos e dados da campanha do mês"
+          onClick={() => handleOpenModal()}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              fileInputRef.current?.click();
+              handleOpenModal();
             }
           }}
           onDragOver={(e) => {
@@ -139,20 +162,13 @@ export default function MockupHomePage() {
             e.stopPropagation();
             setIsDraggingOver(false);
           }}
-          onDrop={handleDrop}
+          onDrop={handleDropOnCard}
           className={`relative flex flex-col items-center justify-center w-full sm:w-80 h-52 p-3 rounded-2xl cursor-pointer group transition-all shrink-0 border-2 ${
             isDraggingOver
               ? "bg-[#1f7a3d]/10 border-[#1f7a3d] border-dashed scale-[1.01]"
               : "bg-[#f5f5f7] border-transparent hover:border-[#1f7a3d]/40"
           }`}
         >
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept="image/*"
-            className="hidden"
-          />
           {preview ? (
             <div className="relative w-full h-full rounded-xl overflow-hidden bg-black/5">
               <img
@@ -161,9 +177,10 @@ export default function MockupHomePage() {
                 onError={() => setPreview(null)}
                 className="w-full h-full object-contain rounded-xl"
               />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 text-white p-3 text-center">
-                <Upload className="w-6 h-6" aria-hidden="true" />
-                <span className="text-xs font-bold">
+              {/* Texto sempre visível para indicar substituição / abertura do modal */}
+              <div className="absolute inset-0 bg-black/55 group-hover:bg-black/65 transition-colors flex flex-col items-center justify-center gap-1.5 text-white p-3 text-center">
+                <Upload className="w-6 h-6 drop-shadow" aria-hidden="true" />
+                <span className="text-xs font-bold drop-shadow">
                   Clique ou arraste outra imagem para substituir
                 </span>
               </div>
@@ -172,7 +189,7 @@ export default function MockupHomePage() {
             <div className="w-full h-full flex flex-col items-center justify-center gap-3 border border-dashed border-gray-400/80 rounded-xl p-4 group-hover:border-[#1f7a3d] transition-colors">
               <ImageIcon className="w-8 h-8 text-gray-500" aria-hidden="true" />
               <p className="text-sm text-gray-800 font-medium text-center">
-                Arraste aqui o cartaz do mês ou clique para enviar
+                Clique ou arraste outra imagem para substituir
               </p>
             </div>
           )}
@@ -181,18 +198,24 @@ export default function MockupHomePage() {
         <section className="flex flex-1 flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#1f7a3d] bg-[#1f7a3d]/10 px-2.5 py-1 rounded-full">
-              Destaque CIPA
+              {posterTag}
             </span>
             {posterLabel && (
-              <span className="text-xs text-gray-500 truncate max-w-xs">
+              <span className="text-xs text-gray-500 truncate max-w-sm">
                 {posterLabel}
+              </span>
+            )}
+            {posterSlidesCount > 1 && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full">
+                <Images className="w-3 h-3" aria-hidden="true" />
+                {posterSlidesCount} cartazes
               </span>
             )}
           </div>
 
           <h2 className="font-bold text-xl text-gray-900">Campanha do mês</h2>
           <p className="text-sm text-gray-600 max-w-[75ch] leading-relaxed">
-            Atualizado periodicamente pela CIPA. Arraste uma nova imagem no quadro ao lado (ou clique sobre ele) para substituir o cartaz em exibição — todos os cartazes anteriores permanecem organizados na linha do tempo de Campanhas.
+            {posterDescription}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -202,7 +225,7 @@ export default function MockupHomePage() {
               title="Ver Campanhas Anteriores"
               icon={<ArrowRight size={14} />}
             />
-            {customObjectUrl && (
+            {customObjectUrls.length > 0 && (
               <Button
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-3.5 py-2 text-xs"
                 onClick={handleRestoreDefault}
@@ -252,6 +275,16 @@ export default function MockupHomePage() {
           ))}
         </div>
       </section>
+
+      <CampaignUploadModal
+        isOpen={isUploadModalOpen}
+        initialFiles={droppedFiles}
+        onClose={() => {
+          setIsUploadModalOpen(false);
+          setDroppedFiles(undefined);
+        }}
+        onSave={handleSaveCampaign}
+      />
     </main>
   );
 }

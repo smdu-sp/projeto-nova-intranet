@@ -226,13 +226,15 @@
 /* Campos de formulário, Links e Estados Selecionados em Alto Contraste */
 .high-contrast select,
 .high-contrast select option,
-.high-contrast input {
+.high-contrast input,
+.high-contrast textarea {
   background-color: #000000 !important;
   color: #ffffff !important;
   border-color: #ffffff !important;
 }
 
-.high-contrast input::placeholder {
+.high-contrast input::placeholder,
+.high-contrast textarea::placeholder {
   color: #cccccc !important;
 }
 
