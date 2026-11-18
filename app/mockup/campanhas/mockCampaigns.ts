@@ -4,6 +4,8 @@ export interface CampaignSlide {
   /** Opcional: arte dedicada para mobile */
   mobileSrc?: string;
   caption?: string;
+  /** Texto extraído via OCR ou descrito para leitores de tela e acessibilidade */
+  accessibleText?: string;
 }
 
 export interface CampaignItem {
@@ -45,6 +47,7 @@ export interface CampaignFolderMeta {
   title: string;
   description: string;
   captions?: Record<number, string>;
+  accessibleTexts?: Record<number, string>;
 }
 
 /**
@@ -67,6 +70,15 @@ export const CAMPAIGN_FOLDER_METADATA: Record<string, CampaignFolderMeta> = {
       6: "Cartaz 6 — Fatores humanos e organizacionais: uso adequado de escadas em vez de cadeiras",
       7: "Cartaz 7 — Contato da CIPA SMUL: juntos construindo ambientes mais seguros",
     },
+    accessibleTexts: {
+      1: "Aqui na SMUL tem CIPA.\nOs acidentes de trabalho em ambientes de escritório decorrem principalmente de: Condições ambientais inseguras; Falhas comportamentais; Falhas organizacionais.\nSegundo dados de empresas especializadas em segurança do trabalho, muitas quedas e escorregões no ambiente de trabalho estão relacionados ao descuido com medidas básicas de segurança.",
+      2: "Fatores ambientais e físicos: Fios e cabos expostos nos locais de trabalho ou passagem podem causar tropeços e quedas. Mantenha-os organizados e protegidos.",
+      3: "Fatores ambientais e físicos: Pisos molhados ou escorregadios devem ser devidamente sinalizados para evitar escorregões e quedas.",
+      4: "Fatores ambientais e físicos: Mantenha corredores e locais de passagem livres de caixas, mochilas ou outros obstáculos.",
+      5: "Fatores humanos e organizacionais: Tenha atenção redobrada em desníveis, degraus e escadas, utilizando sempre o corrimão.",
+      6: "Fatores humanos e organizacionais: Utilize escadas adequadas para alcançar locais altos; nunca suba em cadeiras giratórias ou móveis.",
+      7: "CIPA SMUL — Juntos construindo ambientes mais seguros. Em caso de dúvidas ou sugestões, entre em contato pelo e-mail cipasmul@prefeitura.sp.gov.br.",
+    },
   },
   "30-9-2026": {
     tag: "Segurança Elétrica",
@@ -76,6 +88,10 @@ export const CAMPAIGN_FOLDER_METADATA: Record<string, CampaignFolderMeta> = {
     captions: {
       1: "Cartaz 1 — Desligar equipamentos não utilizados e retirar da tomada sempre pelo plug",
       2: "Cartaz 2 — Cuidados com mãos molhadas, sobrecarga de extensões e tomadas de ventiladores",
+    },
+    accessibleTexts: {
+      1: "Aqui na SMUL tem CIPA — Segurança Elétrica.\nPara garantir a segurança de todos, vamos reforçar algumas medidas de prevenção de riscos elétricos:\n• Desligar equipamentos não utilizados;\n• Para retirar um equipamento da tomada: nunca puxar pelo fio, sempre puxar pelo plug.",
+      2: "Segurança Elétrica — Cuidados adicionais:\n• Nunca manusear tomadas ou equipamentos elétricos com as mãos molhadas;\n• Evite sobrecarga em extensões e benjamins (T);\n• Respeite os pontos exclusivos destinados a ventiladores e equipamentos específicos.",
     },
   },
 };
@@ -96,6 +112,7 @@ export const fallbackCampaigns: CampaignItem[] = [
     images: [1, 2, 3, 4, 5, 6, 7].map((num) => ({
       desktopSrc: `/mockup/campanhas/9-9-2026/${num}.jpg`,
       caption: CAMPAIGN_FOLDER_METADATA["9-9-2026"].captions?.[num],
+      accessibleText: CAMPAIGN_FOLDER_METADATA["9-9-2026"].accessibleTexts?.[num],
     })),
   },
   {
@@ -113,6 +130,7 @@ export const fallbackCampaigns: CampaignItem[] = [
     images: [1, 2].map((num) => ({
       desktopSrc: `/mockup/campanhas/30-9-2026/${num}.png`,
       caption: CAMPAIGN_FOLDER_METADATA["30-9-2026"].captions?.[num],
+      accessibleText: CAMPAIGN_FOLDER_METADATA["30-9-2026"].accessibleTexts?.[num],
     })),
   },
 ];

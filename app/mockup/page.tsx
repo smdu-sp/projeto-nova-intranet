@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   ArrowRight,
   ImageIcon,
@@ -11,11 +12,16 @@ import {
   Upload,
 } from "lucide-react";
 import { Boxes } from "@/app/mockup/mockBoxes";
+import {
+  CAMPAIGN_MONTHS,
+  type CampaignItem,
+} from "@/app/mockup/campanhas/mockCampaigns";
 import { Button } from "@/components/mockup/Button";
 import {
   CampaignUploadModal,
   type CampaignUploadData,
 } from "@/components/mockup/campaign-upload-modal";
+import { useTempCampaigns } from "@/components/mockup/temp-campaigns-provider";
 import { FastAcess } from "./mockFastAcess";
 
 const DEFAULT_POSTER_URL = "/mockup/campanhas/30-9-2026/1.png";
@@ -31,26 +37,24 @@ function formatIsoDatePtBr(isoDate: string): string {
 
 export default function MockupHomePage() {
   const router = useRouter();
-  const [preview, setPreview] = useState<string | null>(DEFAULT_POSTER_URL);
-  const [customObjectUrls, setCustomObjectUrls] = useState<string[]>([]);
-  const [posterLabel, setPosterLabel] = useState<string>(DEFAULT_POSTER_LABEL);
-  const [posterTag, setPosterTag] = useState<string>("Destaque CIPA");
-  const [posterDescription, setPosterDescription] = useState<string>(
-    DEFAULT_POSTER_DESCRIPTION
-  );
-  const [posterSlidesCount, setPosterSlidesCount] = useState<number>(1);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const { latestTempCampaign, addTempCampaign, clearTempCampaigns } =
+    useTempCampaigns();
 
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState<File[] | undefined>(
     undefined
   );
 
-  useEffect(() => {
-    return () => {
-      customObjectUrls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [customObjectUrls]);
+  const preview =
+    latestTempCampaign?.images[0]?.desktopSrc ?? DEFAULT_POSTER_URL;
+  const posterTag = latestTempCampaign?.tag ?? "Destaque CIPA";
+  const posterLabel = latestTempCampaign
+    ? `${latestTempCampaign.title} — ${latestTempCampaign.dateFormatted}`
+    : DEFAULT_POSTER_LABEL;
+  const posterDescription =
+    latestTempCampaign?.description ?? DEFAULT_POSTER_DESCRIPTION;
+  const posterSlidesCount = latestTempCampaign?.images.length ?? 1;
 
   const handleOpenModal = (files?: File[]) => {
     setDroppedFiles(files && files.length > 0 ? files : undefined);
@@ -68,28 +72,48 @@ export default function MockupHomePage() {
   };
 
   const handleSaveCampaign = (data: CampaignUploadData) => {
-    customObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    const [year, monthStr, dayStr] = data.date.split("-");
+    const day = Number(dayStr) || 1;
+    const monthNumber = Number(monthStr) || 1;
+    const monthName = CAMPAIGN_MONTHS[monthNumber - 1] ?? "Setembro";
+    const paddedDay = String(day).padStart(2, "0");
+    const paddedMonth = String(monthNumber).padStart(2, "0");
+    const dateFormatted = `${paddedDay}/${paddedMonth}/${year}`;
 
-    const urls = data.slides.map((s) => s.previewUrl);
-    setCustomObjectUrls(urls);
-    setPreview(urls[0] ?? DEFAULT_POSTER_URL);
-    setPosterTag(data.tag);
-    setPosterLabel(`${data.title} — ${formatIsoDatePtBr(data.date)}`);
-    setPosterDescription(data.description);
-    setPosterSlidesCount(data.slides.length);
+    const tempCampaign: CampaignItem = {
+      id: `temp-${Date.now()}`,
+      folderName: `${day}-${monthNumber}-${year}`,
+      day,
+      monthNumber,
+      month: monthName,
+      year: year || "2026",
+      dateFormatted,
+      dateLabel: `${paddedDay} de ${monthName}`,
+      tag: data.tag,
+      title: data.title,
+      description: data.description,
+      images: data.slides.map((slide, idx) => ({
+        desktopSrc: slide.previewUrl,
+        caption:
+          slide.caption.trim() ||
+          `Cartaz ${idx + 1} de ${data.slides.length} — ${dateFormatted}`,
+        accessibleText: slide.accessibleText.trim() || undefined,
+      })),
+    };
+
+    addTempCampaign(tempCampaign);
     setIsUploadModalOpen(false);
     setDroppedFiles(undefined);
+
+    toast.success("Campanha publicada temporariamente!", {
+      description:
+        "Ela já aparece na linha do tempo de Campanhas (será limpa ao atualizar a página).",
+    });
   };
 
   const handleRestoreDefault = (e: React.MouseEvent) => {
     e.stopPropagation();
-    customObjectUrls.forEach((url) => URL.revokeObjectURL(url));
-    setCustomObjectUrls([]);
-    setPreview(DEFAULT_POSTER_URL);
-    setPosterTag("Destaque CIPA");
-    setPosterLabel(DEFAULT_POSTER_LABEL);
-    setPosterDescription(DEFAULT_POSTER_DESCRIPTION);
-    setPosterSlidesCount(1);
+    clearTempCampaigns();
   };
 
   return (
@@ -173,8 +197,10 @@ export default function MockupHomePage() {
             <div className="relative w-full h-full rounded-xl overflow-hidden bg-black/5">
               <img
                 src={preview}
-                alt={`Cartaz do mês: ${posterLabel}`}
-                onError={() => setPreview(null)}
+                alt={
+                  latestTempCampaign?.images[0]?.accessibleText?.trim() ||
+                  `Cartaz do mês: ${posterLabel}`
+                }
                 className="w-full h-full object-contain rounded-xl"
               />
               {/* Texto sempre visível para indicar substituição / abertura do modal */}
@@ -225,7 +251,7 @@ export default function MockupHomePage() {
               title="Ver Campanhas Anteriores"
               icon={<ArrowRight size={14} />}
             />
-            {customObjectUrls.length > 0 && (
+            {latestTempCampaign && (
               <Button
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-3.5 py-2 text-xs"
                 onClick={handleRestoreDefault}

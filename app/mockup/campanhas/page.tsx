@@ -4,9 +4,12 @@ import { CampanhasClient } from "./campanhas-client";
 import {
   CAMPAIGN_FOLDER_METADATA,
   CAMPAIGN_MONTHS,
+  CampaignFolderMeta,
   CampaignItem,
   fallbackCampaigns,
 } from "./mockCampaigns";
+
+export const dynamic = "force-dynamic";
 
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".svg"]);
 
@@ -28,8 +31,8 @@ function loadCampaignsFromPublic(): CampaignItem[] {
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
 
-    // Espera pastas no formato D-M-AAAA ou DD-MM-AAAA (ex.: "9-9-2026", "30-9-2026")
-    const match = entry.name.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+    // Espera pastas no formato D-M-AAAA ou DD-MM-AAAA (com sufixo opcional --N)
+    const match = entry.name.match(/^(\d{1,2})-(\d{1,2})-(\d{4})(?:--\d+)?$/);
     if (!match) continue;
 
     const day = Number(match[1]);
@@ -60,7 +63,24 @@ function loadCampaignsFromPublic(): CampaignItem[] {
     const paddedMonth = String(monthNumber).padStart(2, "0");
     const dateFormatted = `${paddedDay}/${paddedMonth}/${year}`;
     const dateLabel = `${paddedDay} de ${monthName}`;
-    const meta = CAMPAIGN_FOLDER_METADATA[entry.name];
+
+    let diskMeta: Partial<CampaignFolderMeta> | undefined;
+    const metadataPath = path.join(folderPath, "metadata.json");
+    if (fs.existsSync(metadataPath)) {
+      try {
+        diskMeta = JSON.parse(fs.readFileSync(metadataPath, "utf-8"));
+      } catch {
+        diskMeta = undefined;
+      }
+    }
+    const staticMeta = CAMPAIGN_FOLDER_METADATA[entry.name];
+    const meta = {
+      tag: diskMeta?.tag ?? staticMeta?.tag,
+      title: diskMeta?.title ?? staticMeta?.title,
+      description: diskMeta?.description ?? staticMeta?.description,
+      captions: diskMeta?.captions ?? staticMeta?.captions,
+      accessibleTexts: diskMeta?.accessibleTexts ?? staticMeta?.accessibleTexts,
+    };
 
     campaigns.push({
       id: entry.name,
@@ -84,6 +104,7 @@ function loadCampaignsFromPublic(): CampaignItem[] {
           caption:
             meta?.captions?.[slideIndex] ??
             `Cartaz ${idx + 1} de ${imageFiles.length} — ${dateFormatted}`,
+          accessibleText: meta?.accessibleTexts?.[slideIndex],
         };
       }),
     });

@@ -19,6 +19,7 @@ import {
   ZoomIn,
 } from "lucide-react";
 import PreviousPage from "@/components/mockup/PreviousPage";
+import { useTempCampaigns } from "@/components/mockup/temp-campaigns-provider";
 import {
   CAMPAIGN_MONTHS,
   CAMPAIGN_YEARS,
@@ -49,6 +50,9 @@ function ResponsiveCampaignArt({
   const [mobileError, setMobileError] = useState(false);
 
   const mobileSrc = slide.mobileSrc || slide.desktopSrc;
+  const accessibleAlt =
+    slide.accessibleText?.trim() ||
+    (slide.caption ? `${campaignTitle} — ${slide.caption}` : campaignTitle);
 
   useEffect(() => {
     setDesktopError(false);
@@ -84,7 +88,7 @@ function ResponsiveCampaignArt({
             />
             <img
               src={slide.desktopSrc}
-              alt={slide.caption ? `${campaignTitle} — ${slide.caption}` : campaignTitle}
+              alt={accessibleAlt}
               draggable={false}
               onError={() => setDesktopError(true)}
               className="relative z-10 w-full h-full object-contain"
@@ -116,7 +120,7 @@ function ResponsiveCampaignArt({
             />
             <img
               src={mobileSrc}
-              alt={slide.caption ? `${campaignTitle} — ${slide.caption}` : campaignTitle}
+              alt={accessibleAlt}
               draggable={false}
               onError={() => setMobileError(true)}
               className="relative z-10 w-full h-full object-contain"
@@ -129,19 +133,28 @@ function ResponsiveCampaignArt({
 }
 
 export function CampanhasClient({ campaigns }: { campaigns: CampaignItem[] }) {
+  const { tempCampaigns } = useTempCampaigns();
+
+  const allCampaigns = useMemo(() => {
+    return [...tempCampaigns, ...campaigns];
+  }, [tempCampaigns, campaigns]);
+
   const latestCampaign = useMemo(() => {
-    if (campaigns.length === 0) return null;
-    return [...campaigns].sort((a, b) => {
+    if (allCampaigns.length === 0) return null;
+    return [...allCampaigns].sort((a, b) => {
       if (Number(b.year) !== Number(a.year)) return Number(b.year) - Number(a.year);
       if (b.monthNumber !== a.monthNumber) return b.monthNumber - a.monthNumber;
       return b.day - a.day;
     })[0];
-  }, [campaigns]);
+  }, [allCampaigns]);
 
   const availableYears = useMemo(() => {
-    const yearsSet = new Set<string>([...CAMPAIGN_YEARS, ...campaigns.map((c) => c.year)]);
+    const yearsSet = new Set<string>([
+      ...CAMPAIGN_YEARS,
+      ...allCampaigns.map((c) => c.year),
+    ]);
     return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
-  }, [campaigns]);
+  }, [allCampaigns]);
 
   const [selectedYear, setSelectedYear] = useState<string>(
     latestCampaign?.year ?? availableYears[0] ?? "2026"
@@ -177,10 +190,10 @@ export function CampanhasClient({ campaigns }: { campaigns: CampaignItem[] }) {
   });
 
   const filteredCampaigns = useMemo(() => {
-    return campaigns
+    return allCampaigns
       .filter((campaign) => campaign.year === selectedYear && campaign.month === selectedMonth)
       .sort((a, b) => a.day - b.day);
-  }, [campaigns, selectedYear, selectedMonth]);
+  }, [allCampaigns, selectedYear, selectedMonth]);
 
   const openModal = useCallback((campaign: CampaignItem) => {
     if (closeTimerRef.current) {
