@@ -18,8 +18,9 @@ import {
   X,
   ZoomIn,
 } from "lucide-react";
-import PreviousPage from "@/components/cipa/PreviousPage";
+import PreviousPage from "@/components/cipa/previous-page";
 import { useTempCampaigns } from "@/components/cipa/temp-campaigns-provider";
+import { useModalAccessibility } from "@/lib/cipa/use-modal-accessibility";
 import {
   CAMPAIGN_MONTHS,
   CAMPAIGN_YEARS,
@@ -171,6 +172,7 @@ export function CampanhasClient({ campaigns }: { campaigns: CampaignItem[] }) {
   const [isDragging, setIsDragging] = useState(false);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const carouselViewportRef = useRef<HTMLDivElement | null>(null);
+  const modalBoxRef = useRef<HTMLDivElement | null>(null);
   const dragStateRef = useRef<{
     pointerId: number | null;
     startX: number;
@@ -348,24 +350,13 @@ export function CampanhasClient({ campaigns }: { campaigns: CampaignItem[] }) {
     [hasMultipleSlides, currentSlide, totalSlides]
   );
 
-  useEffect(() => {
-    if (!activeCampaign) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeModal();
-      if (event.key === "ArrowLeft" && hasMultipleSlides) prevSlide();
-      if (event.key === "ArrowRight" && hasMultipleSlides) nextSlide();
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [activeCampaign, hasMultipleSlides, closeModal, prevSlide, nextSlide]);
+  useModalAccessibility({
+    isOpen: Boolean(activeCampaign),
+    containerRef: modalBoxRef,
+    onClose: closeModal,
+    onArrowLeft: hasMultipleSlides ? prevSlide : undefined,
+    onArrowRight: hasMultipleSlides ? nextSlide : undefined,
+  });
 
   const activeSlide = activeCampaign?.images[currentSlide];
 
@@ -567,6 +558,8 @@ export function CampanhasClient({ campaigns }: { campaigns: CampaignItem[] }) {
         >
           {/* Caixa de Pop-up (mínimo de 80% de largura e altura da tela) */}
           <div
+            ref={modalBoxRef}
+            tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             className={`campaign-popup-box relative w-[92vw] sm:w-[86vw] min-w-[80vw] h-[85vh] min-h-[80vh] max-h-[92vh] bg-white rounded-3xl border border-gray-200 shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-300 ease-out ${
               isModalVisible

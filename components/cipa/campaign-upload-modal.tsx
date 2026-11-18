@@ -2,7 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowUp, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Eye, FileText, ImagePlus, Loader2, RefreshCw, Sparkles, Tag, Trash2, X } from "lucide-react";
-import { extractTextFromPoster, summarizeCampaignFromSlides } from "@/lib/cipa/ocr-cartaz";
+import { extractTextFromPoster, summarizeCampaignFromSlides, type OcrExtractionOptions } from "@/lib/cipa/ocr-cartaz";
+import { useModalAccessibility } from "@/lib/cipa/use-modal-accessibility";
+
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export type OcrStatus = "idle" | "processing" | "done" | "error";
 
@@ -74,17 +77,22 @@ export function CampaignUploadModal({ isOpen, initialFiles, onClose, onSave }: C
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<UploadedCampaignSlide[]>([]);
 
   slidesRef.current = slides;
 
-  const runOcrForSlide = useCallback(async (slideId: string, file: File) => {
+  const runOcrForSlide = useCallback(async (slideId: string, file: File, options?: OcrExtractionOptions) => {
     setSlides((prev) => prev.map((s) => (s.id === slideId ? { ...s, ocrStatus: "processing", ocrProgress: 0 } : s)));
 
     try {
-      const result = await extractTextFromPoster(file, (progress) => {
-        setSlides((prev) => prev.map((s) => (s.id === slideId ? { ...s, ocrProgress: progress } : s)));
-      });
+      const result = await extractTextFromPoster(
+        file,
+        (progress) => {
+          setSlides((prev) => prev.map((s) => (s.id === slideId ? { ...s, ocrProgress: progress } : s)));
+        },
+        options,
+      );
 
       setSlides((prev) =>
         prev.map((s) => {
@@ -106,13 +114,26 @@ export function CampaignUploadModal({ isOpen, initialFiles, onClose, onSave }: C
   const appendFiles = useCallback(
     (fileList: FileList | File[] | undefined | null) => {
       if (!fileList) return;
-      const validFiles = Array.from(fileList).filter((file) => file.type.startsWith("image/"));
-      if (validFiles.length === 0) {
+      const allFiles = Array.from(fileList);
+      const imageFiles = allFiles.filter((file) => file.type.startsWith("image/"));
+      if (imageFiles.length === 0) {
         setError("Selecione apenas arquivos de imagem válidos (PNG, JPG, WebP, etc.).");
         return;
       }
 
-      setError(null);
+      const oversized = imageFiles.filter((file) => file.size > MAX_IMAGE_SIZE_BYTES);
+      const validFiles = imageFiles.filter((file) => file.size <= MAX_IMAGE_SIZE_BYTES);
+
+      if (validFiles.length === 0) {
+        setError("As imagens selecionadas excedem o limite máximo de 10 MB por arquivo.");
+        return;
+      }
+
+      if (oversized.length > 0) {
+        setError(`${oversized.length} arquivo(s) ignorado(s) por ultrapassar o limite de 10 MB.`);
+      } else {
+        setError(null);
+      }
       const createdSlides: UploadedCampaignSlide[] = validFiles.map((file, index) => ({
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${index}`,
         file,
@@ -173,36 +194,32 @@ export function CampaignUploadModal({ isOpen, initialFiles, onClose, onSave }: C
     }
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    if (initialFiles && initialFiles.length > 0) {
-      appendFiles(initialFiles);
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        slidesRef.current.forEach((s) => URL.revokeObjectURL(s.previewUrl));
-        resetModalState();
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, initialFiles, appendFiles, resetModalState, onClose]);
-
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     slidesRef.current.forEach((s) => URL.revokeObjectURL(s.previewUrl));
     resetModalState();
     onClose();
-  };
+  }, [resetModalState, onClose]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (initialFiles && initialFiles.length > 0) {
+      appendFiles(initialFiles);
+    }
+  }, [isOpen, initialFiles, appendFiles]);
+
+  useModalAccessibility({
+    isOpen,
+    containerRef: modalBoxRef,
+    onClose: handleClose,
+    onArrowLeft:
+      step === "preview" && slides.length > 1
+        ? () => setPreviewSlideIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+        : undefined,
+    onArrowRight:
+      step === "preview" && slides.length > 1
+        ? () => setPreviewSlideIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+        : undefined,
+  });
 
   const handleRemoveSlide = (id: string) => {
     setSlides((prev) => {
@@ -295,6 +312,8 @@ export function CampaignUploadModal({ isOpen, initialFiles, onClose, onSave }: C
       className="campaign-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/65 backdrop-blur-sm"
     >
       <div
+        ref={modalBoxRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         className={`campaign-popup-box w-full ${
           step === "preview" ? "max-w-4xl" : "max-w-2xl"
@@ -548,6 +567,16 @@ export function CampaignUploadModal({ isOpen, initialFiles, onClose, onSave }: C
                               >
                                 <RefreshCw className="w-3 h-3" aria-hidden="true" />
                                 <span>Reprocessar</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => void runOcrForSlide(slide.id, slide.file, { inverted: true })}
+                                disabled={slide.ocrStatus === "processing"}
+                                title="Reprocessar invertendo cores (melhor para texto branco em fundo escuro)"
+                                aria-label={`Reprocessar OCR em modo texto claro do cartaz ${index + 1}`}
+                                className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded-full disabled:opacity-40 cursor-pointer"
+                              >
+                                <span>Texto claro</span>
                               </button>
                             </div>
                           </div>

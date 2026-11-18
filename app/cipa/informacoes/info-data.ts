@@ -13,6 +13,7 @@ export interface TableInfoProps {
   description: string;
   access: string;
   href?: string;
+  documentUrl?: string;
   topicId?: number;
 }
 

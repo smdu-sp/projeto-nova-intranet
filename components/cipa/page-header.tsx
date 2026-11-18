@@ -1,4 +1,4 @@
-import PreviousPage from "@/components/cipa/PreviousPage";
+import PreviousPage from "@/components/cipa/previous-page";
 
 interface PageHeaderProps {
   title: string;

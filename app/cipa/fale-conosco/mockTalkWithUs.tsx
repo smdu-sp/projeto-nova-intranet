@@ -1,5 +1,6 @@
 import { Mailbox, MailIcon, Shield } from "lucide-react";
 import { ReactNode } from "react";
+import { mockPeople } from "@/app/cipa/equipe/mockPeople";
 
 export interface mockTalkWithUsProps {
   id: number;
@@ -53,33 +54,24 @@ export const mockTalkWithUs: mockTalkWithUsProps[] = [
   },
 ];
 
-export const mockDirectors: DirectorProps[] = [
-  {
-    id: 1,
-    name: "Leila Souza Petrini",
-    role: "Presidente",
-    unit: "PARHIS",
-    position: "Presidente · PARHIS",
-  },
-  {
-    id: 2,
-    name: "Rosemeire de Almeida",
-    role: "Vice-Presidente",
-    unit: "GEOINFO",
-    position: "Vice-presidente · GEOINFO",
-  },
-  {
-    id: 3,
-    name: "Analice Barbosa dos Santos",
-    role: "1ª Secretária",
-    unit: "CASE",
-    position: "1ª secretária · CASE",
-  },
-  {
-    id: 4,
-    name: "Hélio Freitas Filho",
-    role: "2º Secretário",
-    unit: "SERVIN",
-    position: "2º secretário · SERVIN",
-  },
+const DIRECTOR_ORDER = [
+  "Presidente",
+  "Vice-Presidente",
+  "1ª Secretária",
+  "2º Secretário",
 ];
+
+export const mockDirectors: DirectorProps[] = mockPeople
+  .filter((person) => Boolean(person.role && person.role !== "—"))
+  .sort((a, b) => {
+    const idxA = DIRECTOR_ORDER.indexOf(a.role ?? "");
+    const idxB = DIRECTOR_ORDER.indexOf(b.role ?? "");
+    return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
+  })
+  .map((person) => ({
+    id: person.id,
+    name: person.name,
+    role: person.role ?? "",
+    unit: person.unit ?? "SMUL",
+    position: `${person.role} · ${person.unit ?? "SMUL"}`,
+  }));

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, FileText, Info, X } from "lucide-react";
 import { PageHeader } from "@/components/cipa/page-header";
-import { MockInfo, TableInfo, type MockInfoProps } from "./MokcInfo";
+import { MockInfo, TableInfo, type MockInfoProps } from "./info-data";
 
 export default function InformacoesPage() {
   const [selectedTopic, setSelectedTopic] = useState<MockInfoProps | null>(null);
@@ -138,7 +138,7 @@ export default function InformacoesPage() {
               </tr>
             </thead>
             <tbody>
-              {TableInfo.map(({ id, theme, description, access, href, topicId }) => {
+              {TableInfo.map(({ id, theme, description, access, href, documentUrl, topicId }) => {
                 const relatedTopic = topicId
                   ? MockInfo.find((t) => t.id === topicId)
                   : undefined;
@@ -155,7 +155,17 @@ export default function InformacoesPage() {
                       <p className="text-xs text-gray-600">{description}</p>
                     </td>
                     <td className="py-3.5 px-4">
-                      {href ? (
+                      {documentUrl ? (
+                        <a
+                          href={documentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[#1f7a3d] hover:underline"
+                        >
+                          <span>{access}</span>
+                          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                        </a>
+                      ) : href ? (
                         <Link
                           href={href}
                           className="inline-flex items-center gap-1 text-xs font-bold text-[#1f7a3d] hover:underline"

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowRight, TriangleAlert } from "lucide-react";
-import { Button } from "@/components/cipa/Button";
+import { Button } from "@/components/cipa/button";
 
 interface BannerAlertProps {
   message?: string;

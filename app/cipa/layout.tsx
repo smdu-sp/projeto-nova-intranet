@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/cipa/header";
 import { Footer } from "@/components/cipa/footer";
 import { AccessibilityBar } from "@/components/cipa/accessibility-bar";
-import { BannerAlert } from "@/components/cipa/BannerAlert";
+import { BannerAlert } from "@/components/cipa/banner-alert";
 import { TempCampaignsProvider } from "@/components/cipa/temp-campaigns-provider";
 
 export const metadata: Metadata = {

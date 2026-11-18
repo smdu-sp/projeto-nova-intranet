@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { Captions, Clock, PlayCircle, X } from "lucide-react";
 import { PageHeader } from "@/components/cipa/page-header";
-import { VideoCard } from "@/components/cipa/VideoCard";
+import { VideoCard } from "@/components/cipa/video-card";
+import { useModalAccessibility } from "@/lib/cipa/use-modal-accessibility";
 import { mockVideos, type MockVideoItem } from "./mockVideos";
 
 export default function VideosPage() {
   const [selectedVideo, setSelectedVideo] = useState<MockVideoItem | null>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
+
+  useModalAccessibility({
+    isOpen: Boolean(selectedVideo),
+    containerRef: modalBoxRef,
+    onClose: () => setSelectedVideo(null),
+  });
 
   return (
     <main className="max-w-[1180px] mx-auto px-6 py-4">
@@ -48,6 +56,8 @@ export default function VideosPage() {
           className="campaign-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm"
         >
           <div
+            ref={modalBoxRef}
+            tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             className="campaign-popup-box w-full max-w-2xl bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-2xl flex flex-col"
           >
@@ -85,16 +95,38 @@ export default function VideosPage() {
               </button>
             </div>
 
-            {/* Área do Player (Placeholder 16:9) */}
-            <div className="w-full aspect-video bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col items-center justify-center p-6 text-center gap-3">
-              <PlayCircle className="w-12 h-12 text-[#1f7a3d]" aria-hidden="true" />
-              <p className="text-sm font-bold">
-                Conteúdo em fase de finalização ({selectedVideo.status})
-              </p>
-              <p className="text-xs text-gray-300 max-w-md">
-                Este vídeo está sendo preparado com legendas sincronizadas pela equipe de Comunicação da CIPA SMUL.
-              </p>
-            </div>
+            {/* Área do Player (HTML5 Video com legendas .vtt quando disponível, ou placeholder 16:9) */}
+            {selectedVideo.videoUrl ? (
+              <div className="w-full aspect-video bg-black">
+                <video
+                  controls
+                  preload="metadata"
+                  className="w-full h-full"
+                  src={selectedVideo.videoUrl}
+                >
+                  {selectedVideo.subtitleUrl && (
+                    <track
+                      kind="subtitles"
+                      src={selectedVideo.subtitleUrl}
+                      srcLang="pt-BR"
+                      label="Português (Brasil)"
+                      default
+                    />
+                  )}
+                  Seu navegador não suporta a reprodução de vídeo HTML5.
+                </video>
+              </div>
+            ) : (
+              <div className="w-full aspect-video bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col items-center justify-center p-6 text-center gap-3">
+                <PlayCircle className="w-12 h-12 text-[#1f7a3d]" aria-hidden="true" />
+                <p className="text-sm font-bold">
+                  Conteúdo em fase de finalização ({selectedVideo.status})
+                </p>
+                <p className="text-xs text-gray-300 max-w-md">
+                  Este vídeo está sendo preparado com legendas sincronizadas pela equipe de Comunicação da CIPA SMUL.
+                </p>
+              </div>
+            )}
 
             {/* Detalhes e Tópicos Abordados */}
             <div className="p-6 flex flex-col gap-4">

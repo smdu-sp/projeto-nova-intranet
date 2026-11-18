@@ -296,6 +296,13 @@
   background-color: rgba(0, 0, 0, 0.55) !important;
 }
 
+.high-contrast div.cipa-home-poster-overlay {
+  top: auto !important;
+  background-color: #000000 !important;
+  border-top: 2px solid #ffcc00 !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
 .high-contrast button.campaign-card-btn {
   background-color: #000000 !important;
   color: #ffffff !important;

@@ -7,6 +7,11 @@ export interface OcrExtractionResult {
   suggestedCaption: string;
 }
 
+export interface OcrExtractionOptions {
+  /** Inverte cores do canvas para melhorar leitura de textos claros em fundos escuros */
+  inverted?: boolean;
+}
+
 const VALID_SHORT_PT_WORDS = new Set([
   "a",
   "à",
@@ -33,8 +38,12 @@ const VALID_SHORT_PT_WORDS = new Set([
  * Pré-processa a imagem em um canvas offscreen:
  * - Faz upscale de alta qualidade para pelo menos 2000px de largura (melhora leitura de fontes pequenas em cartazes)
  * - Mantém contraste limpo sem destruir textos em caixas coloridas
+ * - Opcionalmente inverte as cores para faixas escuras com texto branco
  */
-async function preprocessImageForOcr(file: File): Promise<HTMLCanvasElement> {
+async function preprocessImageForOcr(
+  file: File,
+  options?: OcrExtractionOptions
+): Promise<HTMLCanvasElement> {
   const imageUrl = URL.createObjectURL(file);
 
   try {
@@ -69,6 +78,17 @@ async function preprocessImageForOcr(file: File): Promise<HTMLCanvasElement> {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, width, height);
     ctx.drawImage(img, 0, 0, width, height);
+
+    if (options?.inverted) {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        data[i] = 255 - data[i];
+        data[i + 1] = 255 - data[i + 1];
+        data[i + 2] = 255 - data[i + 2];
+      }
+      ctx.putImageData(imageData, 0, 0);
+    }
 
     return canvas;
   } finally {
@@ -222,16 +242,19 @@ export function summarizeCampaignFromSlides(slideTexts: string[]): string {
 
 /**
  * Extrai texto em Português (por) de uma imagem de cartaz usando Tesseract.js no navegador,
+ * utilizando modelo hospedado localmente em `/tessdata` (funciona 100% offline/intranet),
  * com segmentação para textos esparsos (PSM 11) e filtro por nível de confiança.
  */
 export async function extractTextFromPoster(
   file: File,
-  onProgress?: (progressPercent: number) => void
+  onProgress?: (progressPercent: number) => void,
+  options?: OcrExtractionOptions
 ): Promise<OcrExtractionResult> {
   const { createWorker, PSM } = await import("tesseract.js");
-  const preprocessedCanvas = await preprocessImageForOcr(file);
+  const preprocessedCanvas = await preprocessImageForOcr(file, options);
 
   const worker = await createWorker("por", 1, {
+    langPath: "/tessdata",
     logger: (message) => {
       if (
         message.status === "recognizing text" &&

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ExternalLink, Handshake, Mail, X } from "lucide-react";
 import { PageHeader } from "@/components/cipa/page-header";
+import { useModalAccessibility } from "@/lib/cipa/use-modal-accessibility";
 import {
   MockPartners,
   PARTNER_CATEGORIES,
@@ -13,6 +14,13 @@ import {
 export default function ParceriasPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("Todas");
   const [activePartner, setActivePartner] = useState<MockPartnersProps | null>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
+
+  useModalAccessibility({
+    isOpen: Boolean(activePartner),
+    containerRef: modalBoxRef,
+    onClose: () => setActivePartner(null),
+  });
 
   const filteredPartners = useMemo(() => {
     if (selectedCategory === "Todas") return MockPartners;
@@ -137,6 +145,8 @@ export default function ParceriasPage() {
           className="campaign-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
           <div
+            ref={modalBoxRef}
+            tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             className="campaign-popup-box w-full max-w-lg bg-white rounded-2xl border border-gray-200 p-6 shadow-xl flex flex-col gap-4"
           >

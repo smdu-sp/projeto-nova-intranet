@@ -16,7 +16,7 @@ import {
   CAMPAIGN_MONTHS,
   type CampaignItem,
 } from "@/app/cipa/campanhas/mockCampaigns";
-import { Button } from "@/components/cipa/Button";
+import { Button } from "@/components/cipa/button";
 import {
   CampaignUploadModal,
   type CampaignUploadData,
@@ -204,7 +204,7 @@ export default function CipaHomePage() {
                 className="w-full h-full object-contain rounded-xl"
               />
               {/* Texto sempre visível para indicar substituição / abertura do modal */}
-              <div className="absolute inset-0 bg-black/55 group-hover:bg-black/65 transition-colors flex flex-col items-center justify-center gap-1.5 text-white p-3 text-center">
+              <div className="cipa-home-poster-overlay absolute inset-0 bg-black/55 group-hover:bg-black/65 transition-colors flex flex-col items-center justify-center gap-1.5 text-white p-3 text-center">
                 <Upload className="w-6 h-6 drop-shadow" aria-hidden="true" />
                 <span className="text-xs font-bold drop-shadow">
                   Clique ou arraste outra imagem para substituir

@@ -7,6 +7,8 @@ export interface MockVideoItem {
   status: string;
   hasCaptions: boolean;
   topics: string[];
+  videoUrl?: string;
+  subtitleUrl?: string;
 }
 
 export const mockVideos: MockVideoItem[] = [
